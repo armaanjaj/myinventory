@@ -1,0 +1,41 @@
+/* Footer */
+#foot{
+    background-color: #0d1117;
+    padding: 2rem 0rem;
+}
+#logoName{
+    color: white;
+    font-size: 2rem;
+    text-decoration: underline;
+    margin-left: 2rem;
+}
+#linkContainer{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    padding-top: 2rem;
+}
+.footLink{
+    display: flex;
+    flex-direction: column;
+}
+.sectionHead{
+    color: rgb(116, 116, 116);
+    text-decoration: underline;
+}
+.footLink a{
+    text-decoration: none;
+    color: rgb(192, 192, 192);
+    padding: 5px 0px;
+}
+.legalContent{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    color: rgb(116, 116, 116);
+    margin-left: 2rem;
+}
+.legalContent a{
+    text-decoration: none;
+    color: rgb(192, 192, 192);
+}

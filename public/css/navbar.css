@@ -1,0 +1,43 @@
+#headSection{
+    width: 100%;
+    display: inline-block;
+    position: fixed;
+    top: 0;
+    z-index: 1;
+}
+#navbar{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    padding: 5px 0px;
+}
+#navbar a{
+    position: relative;
+    text-decoration: none;
+    color: white;
+    opacity: 1;
+    /*color: black;*/
+    font-weight: bolder;
+    padding: 16px 39px;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 2px;
+}
+.active{
+    border-bottom: 1.5px solid black;
+}
+#navbar a:after{
+    content: '';
+    background-color: var(--underlineAfterBackColor,white);
+    height: 1px;
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    transform: scaleX(0);
+    transform-origin: bottom left;
+    transition: transform 0.5s ease-out;
+}
+#navbar a:hover:after{
+    transform: scaleX(1);
+}

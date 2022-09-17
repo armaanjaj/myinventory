@@ -1,0 +1,207 @@
+*{
+    padding: 0px;
+    margin: 0px;
+    font-family: "Google Sans",Roboto,RobotoDraft,Helvetica,Arial,sans-serif;
+}
+html {
+    scroll-behavior: smooth;
+}
+body{
+    background-color: #f0f2f5;
+    overflow-x: hidden;
+}
+
+/*Header file*/
+.content-header{
+    background-image: url("http://localhost:8084/Home nVentory/images/New-inventory-bg.jpg");
+    filter: brightness(98%);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    padding: 190px 100px;
+    color: white;
+    font-size: 1.2rem;
+    box-shadow: 0 2px 30px rgb(0 0 0 / 63%);
+    transition: 0.5s;
+}
+.addItemLink{
+    background-color: #42b72a;
+    position: absolute;
+    display: inline-block;
+    margin-left: 45%;
+    font-size:20px;
+    cursor:pointer;
+    padding: 15px 15px;
+    border-radius: 4px;
+    margin-top: -30px;
+    width: 91px;
+    height: 61px;
+    -webkit-clip-path: polygon(50% 0%, 100% 0, 100% 50%, 50% 80%, 0 50%, 0 0);
+    box-shadow: 0 2px 35px rgb(0 0 0 / 60%), 0 10px 28px rgb(0 0 0 / 60%);
+}
+.table{
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+.listTable{
+    background-color: white;
+    margin: auto;
+    position: absolute;
+    display: inline-block;
+    left: 50%;
+    transform: translate(18%, 60%);
+    margin-top: -30px;
+    padding: 10px 10px;
+    border-radius: 8px;
+    width: 38%;
+    height: 32%;
+    overflow-y: scroll;
+    box-shadow: 0 2px 4px rgb(0 0 0 / 10%), 0 8px 16px rgb(0 0 0 / 10%);
+}
+table {
+    border-collapse: collapse;
+}
+tr:nth-child(even){
+    background-color: #f2f2f2;
+}
+td, th{
+    width: 10%;
+    padding: 3px 0;
+}
+
+/*Tagline section*/
+.advertiseSection{
+    background-color: white;
+    width: 21rem;
+    margin: auto;
+    position: absolute;
+    display: inline-block;
+    left: 50%;
+    transform: translate(18%, -15rem);
+    margin-top: -30px;
+    padding: 10px 10px;
+    border-radius: 8px;
+    width: 38.5%;
+    text-align: center;
+    height: 20%;
+    box-shadow: 0 2px 4px rgb(0 0 0 / 10%), 0 8px 16px rgb(0 0 0 / 10%);
+    background: hsl(204 100% 5%);
+    color: white;
+}
+.insideText{
+    /*font: bold 20px Poppins, sans-serif;*/
+    /*background-image: linear-gradient(100deg,#77FF33, #33BBFF);*/
+    -webkit-background-clip: text;
+    color: transparent;
+    padding: 28px 10px;
+    animation: changeColor 5s infinite;
+}
+@keyframes changeColor {
+    0%   {background-image: linear-gradient(100deg,#77FF33, #33BBFF);}
+    10%   {background-image: linear-gradient(100deg,#33BBFF, #77FF33);}
+    20%  {background-image: linear-gradient(100deg,#77FF33, #33BBFF);}
+    30%  {background-image: linear-gradient(100deg,#33BBFF, #77FF33);}
+    40%  {background-image: linear-gradient(100deg,#77FF33, #33BBFF);}
+    50%  {background-image: linear-gradient(100deg,#33BBFF, #77FF33);}
+    60%  {background-image: linear-gradient(100deg,#77FF33, #33BBFF);}
+    70%  {background-image: linear-gradient(100deg,#33BBFF, #77FF33);}
+    80% {background-image: linear-gradient(100deg,#77FF33, #33BBFF);}
+    90% {background-image: linear-gradient(100deg,#33BBFF, #77FF33);}
+    100% {background-image: linear-gradient(100deg,#77FF33, #33BBFF);}
+}
+
+/*Overlay*/
+.overlay {
+    height: 0;
+    width: 100%;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    color: white;
+    background-color: rgba(0,0,0, 0.9);
+    overflow-x: hidden;
+    overflow-y: hidden;
+    transition: 0.5s;
+    backdrop-filter: blur(3px);
+}
+.overlay-content {
+    position: relative;
+    top: 25%;
+    width: 100%;
+    text-align: center;
+    margin-top: 30px;
+}
+.overlay a {
+    padding: 8px;
+    text-decoration: none;
+    font-size: 36px;
+    color: #818181;
+    display: block;
+    transition: 0.3s;
+}
+.overlay .closebtn {
+    position: absolute;
+    top: 20px;
+    right: 45px;
+    font-size: 60px;
+}
+
+/*Add item form*/
+.addItemForm{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.addItemFormContainer{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.fieldDiv{
+    padding: 10px 10px; 
+}
+.field{
+    padding-top: 10px;
+    padding-bottom: 10px;
+    width: 244px;
+    text-align: center;
+    border-radius: 6px;
+    outline: none;
+    border: 1px solid #dddfe2;
+}
+.submitBtn{
+    background-color: #e16800;
+    color: white;
+    width: 244px;
+    padding: 10px 106px;
+    border: none;
+}
+
+/*Page body*/
+.pageBodySection{
+    width: 100%;
+    background: rgb(2,0,36);
+    background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(255,255,255,1) 0%, rgba(171,241,255,1) 100%);
+    padding: 20%;
+}
+
+/*Edit items*/
+.editItemContainer{
+    text-align: center;
+    display: flex;
+    align-content: center;
+    border-radius: 10px;
+    padding: 18px 18px;
+    margin: 6.2rem 7rem;
+    position: absolute;
+    background-color: white;
+    box-shadow: 0 2px 4px rgb(0 0 0 / 10%), 0 8px 16px rgb(0 0 0 / 10%);
+}
+
+.warning{
+    font-weight: bolder;
+    font-size: 11px;
+    color: red;
+}
