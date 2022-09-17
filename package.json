@@ -1,0 +1,28 @@
+{
+  "name": "myinventory",
+  "version": "1.0.0",
+  "description": "This project is about a reliable inventory keeping web application which is easy to use and free of cost.",
+  "main": "App.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/armaanjaj/myinventory.git"
+  },
+  "keywords": [
+    "inventory"
+  ],
+  "author": "Armaan Jaj",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/armaanjaj/myinventory/issues"
+  },
+  "homepage": "https://github.com/armaanjaj/myinventory#readme",
+  "dependencies": {
+    "body-parser": "^1.20.0",
+    "ejs": "^3.1.8",
+    "express": "^4.18.1",
+    "mysql": "^2.18.1"
+  }
+}
