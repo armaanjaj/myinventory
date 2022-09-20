@@ -21,15 +21,15 @@
                     <td><%=item.ItemName%></td>
                     <td>$<%=item.Price%></td>
                     <td>
-                        <form method="POST" action="inventory">
-                            <input type="hidden" name="editItem" value="<%item.ItemID%>">
+                        <form method="POST" action="/">
+                            <input type="hidden" name="editItem" value="<%=item.ItemID%>">
                             <input type="hidden" name="action" value="edit">
                             <input type="submit" style="cursor: pointer; padding: 3px 5px;" value="Edit">
                         </form>
                     </td>
                     <td>
-                        <form method="POST" action="inventory">
-                            <input type="hidden" name="deleteItem" value="<%item.ItemID%>">
+                        <form method="POST" action="/">
+                            <input type="hidden" name="deleteItem" value="<%=item.ItemID%>">
                             <input type="hidden" name="action" value="delete">
                             <input type="submit" style="cursor: pointer; padding: 3px 5px;" value="Delete">
                         </form>
@@ -48,7 +48,7 @@
 <div class="editItemContainer">
     <div class="editItemForm">
         <h2>Edit Item</h2>
-        <form method="POST" action="inventory" class="addItemFormContainer">
+        <form method="POST" action="/" class="addItemFormContainer">
             <div class="fieldDiv">
                 <select <%= (start_edit)?"":"disabled"%> class="field" name="category">
                     <% categories.forEach(cat => { %>
@@ -87,7 +87,7 @@
     <a href="javascript:void(1)" class="closebtn" onclick="closeOverlay()">&times;</a>
     <div class="overlay-content">
         <h2>Add Item</h2>
-        <form method="POST" action="inventory" class="addItemFormContainer">
+        <form method="POST" action="/" class="addItemFormContainer">
             <div class="fieldDiv">
                 <select class="field" name="category">
                     <% categories.forEach(cat => { %>
