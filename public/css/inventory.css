@@ -13,7 +13,7 @@ body{
 
 /*Header file*/
 .content-header{
-    background-image: url("http://localhost:8084/Home nVentory/images/New-inventory-bg.jpg");
+    background-image: url("/images/New-inventory-bg.jpg");
     filter: brightness(98%);
     background-repeat: no-repeat;
     background-size: cover;

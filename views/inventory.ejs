@@ -2,7 +2,7 @@
 
 <div class="content">
     <header class="content-header">
-        <h2>Welcome ${name},<br> you've ${count} items in your inventory.</h2>
+        <h2>Welcome <%= name %>,<br> you've <%= count %> items in your inventory.</h2>
     </header>
 
     <article class="content-main">
@@ -15,32 +15,31 @@
                     <th></th>
                 </tr>
 
-                <c:forEach items="${items}" var="item">
-                    <tr style="text-align: left;">
-                        <td>${item.getCategory().getCategoryName()}</td>
-                        <td>${item.getItemName()}</td>
-                        <td>$${item.getPrice()}</td>
-                        <td>
-                            <form method="POST" action="inventory">
-                                <input type="hidden" name="editItem" value="${item.getItemId()}">
-                                <input type="hidden" name="action" value="edit">
-                                <input type="submit" style="cursor: pointer; padding: 3px 5px;" value="Edit">
-                            </form>
-                        </td>
-                        <td>
-                            <form method="POST" action="inventory">
-                                <input type="hidden" name="deleteItem" value="${item.getItemId()}">
-                                <input type="hidden" name="action" value="delete">
-                                <input type="submit" style="cursor: pointer; padding: 3px 5px;" value="Delete">
-                            </form>
-                        </td>
-                    </tr>
-                </c:forEach>
+                <% items.forEach(item => { %>
+                    <tr style="text-align: left;"></tr>
+                    <td><%=item.CategoryName%></td>
+                    <td><%=item.ItemName%></td>
+                    <td>$<%=item.Price%></td>
+                    <td>
+                        <form method="POST" action="inventory">
+                            <input type="hidden" name="editItem" value="<%item.ItemID%>">
+                            <input type="hidden" name="action" value="edit">
+                            <input type="submit" style="cursor: pointer; padding: 3px 5px;" value="Edit">
+                        </form>
+                    </td>
+                    <td>
+                        <form method="POST" action="inventory">
+                            <input type="hidden" name="deleteItem" value="<%item.ItemID%>">
+                            <input type="hidden" name="action" value="delete">
+                            <input type="submit" style="cursor: pointer; padding: 3px 5px;" value="Delete">
+                        </form>
+                    </td>
+                </tr>
+                <% }) %>
             </table>
         </div>
         <div class="advertiseSection">
-            <h2 class="insideText">We're here to manage,<br>
-                so you can focus on your work!</h2>
+            <h2 class="insideText">We're here to manage,<br>so you can focus on your work!</h2>
         </div>
     </article> 
 </div>
@@ -51,31 +50,31 @@
         <h2>Edit Item</h2>
         <form method="POST" action="inventory" class="addItemFormContainer">
             <div class="fieldDiv">
-                <!-- <select ${start_edit eq true?"":"disabled"} class="field" name="category">
-                    <c:forEach items="${categories}" var="cat">
-                        <option ${edit_category eq cat.getCategoryId()?"selected":""} value="${cat.getCategoryId()}">${cat.getCategoryName()}</option>
-                    </c:forEach> -->
+                <select <%= (start_edit)?"":"disabled"%> class="field" name="category">
+                    <% categories.forEach(cat => { %>
+                        <option <%=edit_category === cat.CategoryID?"selected":""%> value="<%=cat.CategoryID%>"><%=cat.CategoryName%></option>
+                    <% }) %>
                 </select>
             </div>
             <div class="fieldDiv">
-                <!-- <input type="text" ${start_edit eq true?"":"disabled"} class="field" name="edit_itemName" value="${edit_itemName}" placeholder="Item name"> -->
+                <input type="text" <%= (start_edit)?"":"disabled"%> class="field" name="edit_itemName" value="<%= edit_itemName%>" placeholder="Item name">
             </div>
-            <c:if test="${message == 'invalidName'}">
+            <c:if test="<%= message === 'invalidName'%>">
                 <div class="warning">
-                    <p>${description}</p>
+                    <p><%= description %></p>
                 </div>
             </c:if>
             <div class="fieldDiv">
-                <!-- <input type="text" ${start_edit eq true?"":"disabled"} class="field" name="edit_price" value="${edit_price}" placeholder="Item price"> -->
+                <input type="text" <%= (start_edit)?"":"disabled"%> class="field" name="edit_price" value="<%= edit_price%>" placeholder="Item price">
             </div>
-            <c:if test="${message == 'invalidPrice'}">
+            <c:if test="<%= message === 'invalidPrice'%>">
                 <div class="warning">
-                    <p>${description}</p>
+                    <p><%= description%></p>
                 </div>
             </c:if>
             <div class="fieldDiv">
                 <input type="hidden" name="action" value="update">
-                <!-- <input type="submit" ${start_edit eq true?"":"disabled"} style="cursor: pointer;" class="field submitBtn" value="Update" onclick="closeOverlay()"> -->
+                <input type="submit" <%= (start_edit)?"":"disabled"%> style="cursor: pointer;" class="field submitBtn" value="Update" onclick="closeOverlay()">
             </div>
         </form>
     </div>
@@ -90,19 +89,17 @@
         <h2>Add Item</h2>
         <form method="POST" action="inventory" class="addItemFormContainer">
             <div class="fieldDiv">
-                <!--<span>Category:-->
                 <select class="field" name="category">
-                    <c:forEach items="${categories}" var="cat">
-                        <!-- <option ${category eq cat.getCategoryId()?"selected":""} value="${cat.getCategoryId()}">${cat.getCategoryName()}</option> -->
-                    </c:forEach>
+                    <% categories.forEach(cat => { %>
+                        <option <%=edit_category === cat.CategoryID?"selected":""%> value="<%=cat.CategoryID%>"><%=cat.CategoryName%></option>
+                    <% }) %>
                 </select>
-                <!--</span>-->
             </div>
             <div class="fieldDiv">
-                <input type="text" class="field" name="itemName" value="${itemName}" placeholder="Item name">
+                <input type="text" class="field" name="itemName" value="<%=itemName%>" placeholder="Item name">
             </div>
             <div class="fieldDiv">
-                <input type="text" class="field" name="price" value="${price}" placeholder="Item price">
+                <input type="text" class="field" name="price" value="<%=price%>" placeholder="Item price">
             </div>
             <div class="fieldDiv">
                 <input type="submit" style="cursor: pointer;" class="field submitBtn" value="Save" onclick="closeOverlay()">

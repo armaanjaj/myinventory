@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>Login into HOME nVentory</title>
+        <link rel="stylesheet" type="text/css" href="css/login.css">
+        <!-- <link rel="icon" href="images/favicon.ico"> -->
+    </head>
+    <body>
+        <div class="parent">
+            <div class="container">
+                <h2>Log in to Home nVentory</h2>
+                <form action="login" method="POST" class="formContainer">
+                    <div class="fieldDiv">
+                        <input type="text" class="fields <%= message === 'invalidEmail'?'inputError':''%>" name="email" value="<%=email%>" placeholder="Email address">
+                    </div>
+                    <% if (message === 'invalidEmail') { %>
+                        <div class="warning">
+                            <p><%=description%></p>
+                        </div>
+                    <% } %>
+                    <div class="fieldDiv">
+                        <input type="password" class="fields <%= message === 'invalidPassword'?'inputError':''%>" name="password" value="<%=password%>" placeholder="Password">
+                    </div>
+                    <% if (message === 'invalidPassword' || message === 'invalidCred' || message === 'backendError' || message === 'unauthorized') { %>
+                        <div class="warning">
+                            <p><%=description%></p>
+                        </div>
+                    <% } %>
+                    <div class="fieldDiv">
+                        <input type="submit" class="btn" value="Sign in">
+                    </div>
+                    <div class="fieldDiv">
+                        <a href="reset" target="_blank">Forgotten password?</a>
+                    </div>
+                    <div class="divider"></div>
+                    <div class="fieldDiv">
+                        <a href="newAccount" class="newAccLink">Create new account</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </body>
+</html>
