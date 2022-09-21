@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>Manage users - HOME nVentory</title>
+        <link rel="stylesheet" type="text/css" href="css/navbar.css">
+        <link rel="stylesheet" type="text/css" href="css/manageUser.css">
+    </head>
+    <body>
+        
+        <%- include("navbar") -%>
+
+        <div class="parentContainer">
+            <div class="container c1">
+                <h2 style="padding-bottom: 10px;">Users</h2>
+                <div class="tableDiv">
+                    <table class="table" style="width: 45rem;">
+                        <tr>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+
+                        <% users.forEach(user => { %>
+                            <tr style="text-align: left;">
+                                <td><%=user.first_name%></td>
+                                <td><%=user.last_name%></td>
+                                <td>
+                                    <form method="POST" action="admin">
+                                        <input type="hidden" name="manage" value="user">
+                                        <input type="hidden" name="deleteUser" value="<%=user.email%>">
+                                        <input type="hidden" name="action" value="delete">
+                                        <input type="submit" style="cursor: pointer;" name="deleteSubmit" value="Delete">
+                                    </form>
+                                </td>
+                                <td>
+                                    <form method="POST" action="admin">
+                                        <input type="hidden" name="manage" value="user">
+                                        <input type="hidden" name="editUser" value="<%=user.email%>">
+                                        <input type="hidden" name="action" value="edit">
+                                        <input type="submit" style="cursor: pointer;" name="editSubmit" value="Edit">
+                                    </form>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </table>
+                </div>
+            </div>
+
+            <div class="container c2">
+                <h2 style="padding-bottom: 10px;"><%=sectionHead%></h2>
+                <div class="userForm">
+                    <form method="POST" action="admin" class="formContainer">
+                        <div class="fieldDiv">
+                            <input type="email" class="fields" id="emailInput" name="email" value="<%=form_email%>" maxlength="50" placeholder="Email"> <br>
+                        </div>
+                        <% if (messageEmail === 'invalidEmail') { %>
+                            <div class="warning">
+                                <p><%=description1%></p>
+                            </div>
+                        <% } %>
+                        <div class="fieldDiv">
+                            <input type="text" class="fields" name="firstName" value="<%=form_firstName%>" maxlength="50" placeholder="First Name"> <br>
+                        </div>
+                        <% if (messageEmail === 'invalidFName') { %>
+                            <div class="warning">
+                                <p><%=description1%></p>
+                            </div>
+                        <% } %>
+                        <div class="fieldDiv">
+                            <input type="text" class="fields" name="lastName" value="<%=form_lastName%>" maxlength="50" placeholder="Last Name"> <br>
+                        </div>
+                        <% if (messageEmail === 'invalidLName') { %>
+                            <div class="warning">
+                                <p><%=description1%></p>
+                            </div>
+                        <% } %>
+                        <div class="fieldDiv">
+                            <input type="password" class="fields" name="password" id="passwordField" value="<%=form_password%>" maxlength="20" placeholder="Password"> 
+                        </div>
+                        <div id="showButton" onmouseover="this.style.cursor = 'pointer'" <%=(form_password)?"onclick='toggle()'":""%> style="display: <%=display%>; background-color: black; padding: 1px 8px; color: white; border: 1px solid black; border-radius: 4px;"></div>
+                        <% if (messageEmail === 'invalidPass') { %>
+                            <div class="warning">
+                                <p><%=description1%></p>
+                            </div>
+                        <% } %>
+                        <div class="fieldDiv">
+                            <label for="isActive">Active: </label>
+                            <input type="checkbox" name="isActive" <%=(activeCheck === true)?"checked":""%>>
+                        </div>
+
+                        <div class="fieldDiv">
+                            <label for="role">Role:</label>
+                            <select name="userRole">
+                                <option value="">---</option>
+                                <% roles.forEach(role => { %>
+                                    <option <%=userRole === role.role_id?"selected":""%> value="<%=role.role_id%>"><%=role.role_name%></option>
+                                <% }) %>
+                            </select>
+                        </div>
+                        <% if (messageRole === 'invalidRole') { %>
+                            <div class="warning">
+                                <p><%=description5%></p>
+                            </div>
+                        <% } %>
+
+                        <input type="hidden" name="manage" value="user">
+                        <input type="hidden" name="action" value="<%=finalAction%>">
+                        <input type="submit" style="cursor: pointer;" class="submitBtn <%=(showCancel === true)?"btnSmall":"btnLarge"%>" value="<%=formButton%>">
+
+                        <% if (showCancel === true) { %>
+                            <input type="hidden" value="cancel">
+                            <input type="submit" style="cursor: pointer;" class="submitBtn btnSmall redBtn" name="resetAction" value="Cancel">
+                        <% } %>
+                    </form>  
+                </div>
+            </div>
+        </div>
+
+        <!-- Hidden values for parsing to JS -->
+        <input type="hidden" name="disable" value="<%= disabled %>">
+
+    </body>
+    <script>
+        window.onload = function () {
+            document.getElementById("emailInput").disabled = (document.getElementsByName("disable")[0].value==="false")?false:true;
+            document.getElementById("showButton").innerText = "Show";
+        };
+
+        function toggle() {
+            if (document.getElementById("passwordField").type === "text") {
+                document.getElementById("passwordField").type = "password";
+                document.getElementById("showButton").style.backgroundColor = "black";
+                document.getElementById("showButton").style.color = "white";
+                document.getElementById("showButton").innerText = "Show";
+            } else {
+                document.getElementById("showButton").innerText = "Hide";
+                document.getElementById("showButton").style.backgroundColor = "white";
+                document.getElementById("showButton").style.color = "black";
+                document.getElementById("passwordField").type = "text";
+            }
+        }
+        ;
+    </script>
+</html>

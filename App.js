@@ -22,152 +22,65 @@ var pool = mysql.createPool({
     port: 3307,
     user: "root",
     password: "password",
-    database: "homeinventorydb"
+    database: "inventorydb"
 });
-// var con = mysql.createConnection({
-//     host: "localhost",
-//     port: 3307,
-//     user: "root",
-//     password: "password",
-//     database: "homeinventorydb"
-// });
 
 // route methods
-app.get("/", (req, res)=>{
-    sess = req.session;
-
-    if(!sess.user){
-        res.redirect("/login");
-        return;
-    }
-
-    pool.getConnection((err, con)=>{
-        if (err) throw err;
-        con.query(`SELECT * FROM items i join categories c on c.categoryID = i.Category WHERE owner = (SELECT firstName FROM users WHERE email = '${sess.user}')`, function (err, result, fields) {
-            if (err) throw err;
-            con.query('SELECT * FROM categories', function (errCat, categoryResult, fieldsCat) {
-                if (err) throw err;
-                con.release();
-                var resultLength = (result)?result.length:0;
-                sess.totalResults = resultLength;
-                sess.categories = categoryResult;
-                sess.results = result;
-                res.render("inventory", {name: sess.fName, count: resultLength, items: result, categories: categoryResult, start_edit: null, edit_category: null, edit_itemName: null, message: null, description: null, edit_price: null, itemName: null, price: null});
-                return;
-            });
-        });
-    });
-})
-app.post("/", (req, res)=>{
-    sess = req.session;
-
-    if(req.body.action && req.body.action === "delete"){
-        var itemid = req.body.deleteItem;
-        pool.getConnection((err, con)=>{
-            if (err) throw err;
-            con.query(`DELETE FROM items WHERE ItemID = '${itemid}'`, function (err, result) {
-                con.release();
-                if(err) throw err;
-                res.redirect("/");
-            });
-        });
-    }
-    else if(req.body.action && req.body.action === "edit"){
-        var itemid = req.body.editItem;
-        pool.getConnection((err, con)=>{
-            if (err) throw err;
-            con.query(`SELECT * FROM items WHERE itemID = '${itemid}'`, function (err, result) {
-                con.release();
-                if(err) throw err;
-                sess.edititem_id = itemid;
-                res.render("inventory", {name: sess.fName, count: sess.totalResults, items: sess.results, categories: sess.categories, start_edit: true, edit_category: result[0].Category, edit_itemName: result[0].ItemName, message: null, description: null, edit_price: result[0].Price, itemName: null, price: null});
-            });
-        });
-    }
-    else if(req.body.action && req.body.action === "update"){
-        var itemid = sess.edititem_id;
-        var category = req.body.category;
-        var itemName = req.body.edit_itemName;
-        var itemPrice = Number(req.body.edit_price);
-        console.log(category)
-        console.log(itemName)
-        console.log(itemPrice)
-        
-        if(category==="" || category === null || itemName==="" || itemName === null || isNaN(itemPrice)){
-            res.render("inventory", {name: sess.fName, count: sess.totalResults, items: sess.results, categories: sess.categories, start_edit: null, edit_category: null, edit_itemName: null, message: null, description: null, edit_price: null, itemName: null, price: null});
-            return;
-        }
-        else{
-            pool.getConnection((err, con)=>{
-                if (err) throw err;
-                con.query(`UPDATE items SET category = '${category}', itemName = '${itemName}', price = '${itemPrice}' WHERE itemID = '${itemid}'`, function (err, result) {
-                    con.release();
-                    if(err) throw err;
-                    console.log("Done"); 
-                    res.redirect("/");
-                    return;
-                });
-            });
-        }
-    }
-    else{
-        var category = req.body.category;
-        var itemName = req.body.itemName;
-        var itemPrice = Number(req.body.price);
-
-        if(category==="" || category === null || itemName==="" || itemName === null || isNaN(itemPrice)){
-            res.render("inventory", {name: sess.fName, count: sess.totalResults, items: sess.results, categories: sess.categories, start_edit: null, edit_category: null, edit_itemName: null, message: null, description: null, edit_price: null, itemName: null, price: null});
-            return;
-        }
-        else{
-            pool.getConnection((err, con)=>{
-                if (err) throw err;
-                con.query(`INSERT INTO items (itemID, category, itemName, price, owner) values ('0', '${category}', '${itemName}', '${itemPrice}', '${sess.fName}')`, function (err, result, fields) {
-                    con.release();
-                    if(err) throw err;
-                    // console.log("Done");
-                    res.redirect("/");
-                    return;
-                });
-            });
-        }
-    }
-})
 app.get("/login", (req, res)=>{
+    res.redirect("/");
+    return;
+})
+
+// home route or login route
+app.get("/", (req, res)=>{
+    
+    sess = req.session;
+    
     if(req.query.action && req.query.action === 'logout'){
         sess = {};
         req.session.destroy();
         res.redirect("/login");
         return;
     }
-    sess = req.session;
+
     if(sess.user){
-        res.redirect("/");
-        return;
+
+        if(sess.user.role === 2){
+            res.redirect("/inventory");
+            return;
+        }
+        else if(sess.user.role === 1 || sess.user.role === 3){
+            res.redirect("/admin");
+            return;
+        }
     }
     res.render("login", {message: "", email:"", password:"", description:""});
 })
-app.post("/login", (req, res)=>{
+
+app.post("/", (req, res)=>{
     sess = req.session;
-    sess.user = req.body.email;
+
     pool.getConnection((err, con)=>{
         if (err) throw err;
-        con.query(`SELECT * FROM users WHERE email = '${req.body.email}'`, function (err, result, fields) {
-            // con.end();
+        con.query(`SELECT * FROM user WHERE email = '${req.body.email}'`, function (err, result, fields) {
+
             con.release();
             if (err) {res.render("login", {message: "backendError", email:`${req.body.email}`, password:`${req.body.password}`, description: "Something went wrong! Please try agian."});};
 
             if(result){
-                if(result[0].Active){
-                    if(result[0].Password === req.body.password){
-                        sess.fName = result[0].FirstName;
-                        // console.log(sess);
-                        if(Boolean(result[0].IsAdmin.readInt8())){
+                if(Boolean(result[0].active)){
+                    if(result[0].password === req.body.password){
+                        // update user object in the session
+                        sess.user = result[0];
+
+                        if(result[0].role === 2){
+                            res.redirect("/inventory");
+                            return;
+                        }
+                        else if(result[0].role === 1 || result[0].role === 3){
                             res.redirect("/admin");
                             return;
                         }
-                        res.redirect("/");
-                        return;
                     }
                     else{
                         res.render("login", {message: "invalidPassword", email:`${req.body.email}`, password:`${req.body.password}`, description: "Invalid password."});
@@ -183,12 +96,332 @@ app.post("/login", (req, res)=>{
         });
     });
 })
+
+// inventory route
+app.get("/inventory", (req, res)=>{
+    sess = req.session;
+
+    if(!sess.user){
+        res.redirect("/login");
+        return;
+    }
+
+    pool.getConnection((err, con)=>{
+        if (err) throw err;
+        con.query(`SELECT * FROM item i join category c on c.category_id = i.category WHERE owner = '${sess.user.email}'`, function (err, result, fields) {
+            if (err) throw err;
+            con.query('SELECT * FROM category', function (errCat, catResult, fieldsCat) {
+                if (err) throw err;
+                con.release();
+
+                var resultLength = (result)?result.length:0;
+                sess.totalItems = resultLength;
+                sess.categorylist = catResult;
+                sess.itemlist = result;
+                res.render("inventory", {name: sess.user.first_name, count: sess.totalItems, items: sess.itemlist, categories: sess.categorylist, start_edit: null, edit_category: null, edit_itemName: null, message: null, description: null, edit_price: null, itemName: null, price: null});
+                return;
+            });
+        });
+    });
+})
+
+app.post("/inventory", (req, res)=>{
+    sess = req.session;
+
+    if(req.body.action && req.body.action === "delete"){
+
+        var itemid = req.body.deleteItem; // item id of the item to delete
+        
+        pool.getConnection((err, con)=>{
+            if (err) throw err;
+
+            con.query(`DELETE FROM item WHERE item_id = '${itemid}'`, function (err, result) {
+                con.release();
+                if(err) throw err;
+                res.redirect("/");
+            });
+        });
+    }
+    else if(req.body.action && req.body.action === "edit"){
+        
+        var itemid = req.body.editItem;  // item id of the item to edit
+        
+        pool.getConnection((err, con)=>{
+            if (err) throw err;
+
+            con.query(`SELECT * FROM item WHERE item_id = '${itemid}'`, function (err, result) {
+                con.release();
+                if(err) throw err;
+                // console.log("Here");
+                // console.log(result);
+                sess.edititem_id = itemid;  // item id in the session of the item to edit
+                res.render("inventory", {name: sess.user.first_name, count: sess.totalItems, items: sess.itemlist, categories: sess.categorylist, start_edit: true, edit_category: result[0].category_id, edit_itemName: result[0].item_name, message: null, description: null, edit_price: result[0].price, itemName: null, price: null});
+            });
+        });
+    }
+    else if(req.body.action && req.body.action === "update"){
+        var itemid = sess.edititem_id;  // item id of the item to edit from the session
+        var category = req.body.category;
+        var itemName = req.body.edit_itemName;
+        var itemPrice = Number(req.body.edit_price);
+        
+        if(category==="" || category === null || itemName==="" || itemName === null || isNaN(itemPrice)){
+            res.render("inventory", {name: sess.user.First_name, count: sess.totalItems, items: sess.itemlist, categories: sess.categorylist, start_edit: null, edit_category: null, edit_itemName: null, message: null, description: null, edit_price: null, itemName: null, price: null});
+            return;
+        }
+        else{
+            pool.getConnection((err, con)=>{
+                if (err) throw err;
+
+                con.query(`UPDATE item SET category = '${category}', item_name = '${itemName}', price = '${itemPrice}' WHERE item_id = '${itemid}'`, function (err, result) {
+                    con.release();
+
+                    if(err) throw err;
+
+                    res.redirect("/");
+                    return;
+                });
+            });
+        }
+    }
+    else{
+        var category = req.body.category;
+        var itemName = req.body.itemName;
+        var itemPrice = Number(req.body.price);
+
+        if(category==="" || category === null || itemName==="" || itemName === null || isNaN(itemPrice)){
+            res.render("inventory", {name: sess.user.First_name, count: sess.totalItems, items: sess.itemlist, categories: sess.categorylist, start_edit: null, edit_category: null, edit_itemName: null, message: null, description: null, edit_price: null, itemName: null, price: null});
+            return;
+        }
+        else{
+            pool.getConnection((err, con)=>{
+                if (err) throw err;
+                con.query(`INSERT INTO item (item_id, category, item_name, price, owner) values ('0', '${category}', '${itemName}', '${itemPrice}', '${sess.user.email}')`, function (err, result, fields) {
+                    con.release();
+                    
+                    if(err) throw err;
+
+                    res.redirect("/");
+                    return;
+                });
+            });
+        }
+    }
+})
+
+// admin route
+app.get("/admin", (req, res)=>{
+    sess = req.session;
+
+    if(!sess.user){
+        res.redirect("/login");
+        return;
+    }
+    else if(sess.user.role === 2){
+        res.redirect("/inventory");
+        return;
+    }
+
+    if(req.query.action){
+        if(req.query.action === "users"){
+
+            pool.getConnection((err, con)=>{
+                if (err) throw err;
+                con.query(`SELECT * FROM user`, function (err, userlist, fields) {
+                    if (err) throw err;
+
+                    con.query('SELECT * FROM role', function (errrole, rolelist, rolefields) {
+                        if (err) throw errrole;
+
+                        con.release();
+                        
+                        sess.userlist = userlist;
+                        sess.rolelist = rolelist;
+
+                        res.render("manageUsers", {users: sess.userlist, roles: sess.rolelist, sectionHead: "Add User", activeCheck: false, formButton: "Save", finalAction: "add", disabled: "false", display: "none", message: null, description: null, form_email: null, messageEmail: null, showCancel: false, form_password: null, form_firstName: null, form_lastName: null, userRole: null, messageRole: null});
+                        return;
+                    });
+                });
+            });
+        }
+        else if(req.query.action === "categories"){
+            pool.getConnection((err, con)=>{
+                if (err) throw err;
+                con.query(`SELECT * FROM category`, function (err, categorylist, fields) {
+                    if (err) throw err;
+
+                    con.release();
+                    
+                    sess.categorylist = categorylist;
+
+                    res.render("manageCategories", {categories: sess.categorylist, sectionHead: "Add Category", formButton: "Save", form_catName: null, messageCatName: null, finalAction: "add", description: null, showCancel: false});
+                    return;
+                });
+            });
+        }
+    }
+    else{
+        res.render("admin", {adminName: sess.user.First_name});
+    }
+});
+
+app.post("/admin", (req, res)=>{
+
+    if(req.body.manage === "category"){
+        if(req.body.resetAction != "cancel"){
+
+            switch(req.body.action){
+                case "edit":{
+                    var cat_id = req.body.editCategory;
+
+                    pool.getConnection((err, con)=>{
+                        if (err) throw err;
+            
+                        con.query(`SELECT * FROM category WHERE category_id = '${cat_id}'`, function (err, result) {
+                            con.release();
+                            if(err) throw err;
+
+                            sess.editcategory_id = cat_id;
+                            res.render("manageCategories", {categories: sess.categorylist, sectionHead: "Edit Category", formButton: "Update", form_catName: result[0].category_name, messageCatName: null, finalAction: "update", description: null, showCancel: true});
+                            return;
+                        });
+                    });
+                    break;
+                }
+                case "update":{
+                    var cat_id = sess.editcategory_id;
+                    var cat_name = req.body.catName;
+
+                    pool.getConnection((err, con)=>{
+                        if (err) throw err;
+            
+                        con.query(`UPDATE category set category_name = '${cat_name}' WHERE category_id = '${cat_id}'`, function (err, result) {
+                            con.release();
+                            if(err) throw err;
+
+                            res.redirect("/admin?action=categories");
+                            return;
+                        });
+                    });
+                    break;
+                }
+                case "add":{
+                    var cat_name = req.body.catName;
+
+                    pool.getConnection((err, con)=>{
+                        if (err) throw err;
+            
+                        con.query(`INSERT INTO category VALUES ('0', '${cat_name}')`, function (err, result) {
+                            con.release();
+                            if(err) throw err;
+
+                            res.redirect("/admin?action=categories");
+                            return;
+                        });
+                    });
+                    break;
+                }
+            }
+        }
+        else{
+            res.redirect("/admin?action=categories");
+            return;
+        }
+    }
+    else if(req.body.manage && req.body.manage === "user"){
+        if(req.body.resetAction != "cancel"){
+
+            switch(req.body.action){
+                case "edit":{
+                    var email = req.body.editUser;
+
+                    pool.getConnection((err, con)=>{
+                        if (err) throw err;
+            
+                        con.query(`SELECT * FROM user WHERE email = '${email}'`, function (err, result) {
+                            con.release();
+                            if(err) throw err;
+
+                            sess.editUseremail = email;
+                            
+                            res.render("manageUsers", {users: sess.userlist, roles: sess.rolelist, sectionHead: "Add User", activeCheck: (result[0].active === 1), formButton: "Edit", finalAction: "update", disabled: "true", display: "inline-block", message: null, description: null, form_email: result[0].email, showCancel: true, form_password: result[0].password, form_firstName: result[0].first_name, form_lastName: result[0].last_name, userRole: result[0].role, messageRole: null, messageEmail: null});
+                            return;
+                        });
+                    });
+                    break;
+                }
+                case "update":{
+                    var email = sess.editUseremail;
+                    var firstName = req.body.firstName;
+                    var lastName = req.body.lastName;
+                    var password = req.body.password;
+                    var isActive = (req.body.isActive)?"1":"0";
+                    var role = req.body.userRole;
+
+                    pool.getConnection((err, con)=>{
+                        if (err) throw err;
+            
+                        con.query(`UPDATE user SET first_name = '${firstName}', last_name = '${lastName}', password = '${password}', active = '${isActive}', role = '${role}' WHERE email = '${email}'`, function (err, result) {
+                            con.release();
+                            if(err) throw err;
+
+                            res.redirect("/admin?action=users");
+                            return;
+                        });
+                    });
+                    break;
+                }
+                case "delete":{
+                    var email = sess.deleteUser;
+
+                    pool.getConnection((err, con)=>{
+                        if (err) throw err;
+            
+                        con.query(`DELETE FROM user WHERE email = '${email}'`, function (err, result) {
+                            con.release();
+                            if(err) throw err;
+
+                            res.redirect("/admin?action=users");
+                            return;
+                        });
+                    });   
+                    break;                 
+                }
+                case "add":{
+                    var email = sess.editUseremail;
+                    var firstName = req.body.firstName;
+                    var lastName = req.body.lastName;
+                    var password = req.body.password;
+                    var isActive = (req.body.isActive)?"1":"0";
+                    var role = req.body.userRole;
+
+                    pool.getConnection((err, con)=>{
+                        if (err) throw err;
+            
+                        con.query(`INSERT INTO user (email, first_name, last_name, password, active, role, reset_password_uuid, register_account_uuid, authentication_uuid) VALUES ('${email}', '${firstName}', '${lastName}', '${password}', '${isActive}', '${role}', 'null', 'null', 'null')`, function (err, result) {
+                            con.release();
+                            if(err) throw err;
+
+                            res.redirect("/admin?action=users");
+                            return;
+                        });
+                    });
+                    break;
+                }
+            }
+        }
+        else{
+            res.redirect("/admin?action=users");
+            return;
+        }
+    }
+
+});
+
 app.get("/reset", (req, res)=>{
     res.send("Reset Page");
 })
-app.get("/admin", (req, res)=>{
-    res.send("Admin Page");
-})
+
 app.get("/reset-password", (req, res)=>{
     res.send("Reset password Page");
 })

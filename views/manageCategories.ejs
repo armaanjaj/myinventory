@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>Manage categories - HOME nVentory</title>
+        <link rel="stylesheet" type="text/css" href="css/navbar.css">
+        <link rel="stylesheet" type="text/css" href="css/manageCategories.css">
+    </head>
+    <body>
+
+        <%- include("navbar") -%>
+
+        <div class="parentContainer">
+            <div class="container c1">
+                <h2 style="padding-bottom: 10px;">Categories</h2>
+                <div class="tableDiv">
+                    <table class="table" style="width: 35rem;">
+                        <tr>
+                            <th>Category Id</th>
+                            <th>Category Name</th>
+                            <th>Edit</th>
+                        </tr>
+
+                        <% categories.forEach(cat => { %>
+                            <tr style="text-align: left;">
+                                <td><%=cat.category_id%></td>
+                                <td><%=cat.category_name%></td>
+                                <td>
+                                    <form method="POST" action="admin">
+                                        <input type="hidden" name="manage" value="category">
+                                        <input type="hidden" name="editCategory" value="<%=cat.category_id%>">
+                                        <input type="hidden" name="action" value="edit">
+                                        <input type="submit" style="cursor: pointer; padding: 3px 5px;" name="editSubmit" value="Edit">
+                                    </form>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </table>
+                </div>
+            </div>
+
+            <div class="container c2">
+                <h2 style="padding-bottom: 10px;"><%=sectionHead%></h2>
+                <div class="userForm">
+                    <form method="POST" action="admin" class="formContainer">
+                        <label>Category Name: </label>
+                        <input type="text" name="catName" value="<%=form_catName%>" maxlength="50"> <br>
+                        <% if (messageCatName === 'invalidCatName') { %>
+                            <div class="warning">
+                                <p><%=description%></p>
+                            </div>
+                        <% } %>
+                        <input type="hidden" name="manage" value="category">
+                        <input type="hidden" name="action" value="<%=finalAction%>">
+
+                        <input type="submit" style="cursor: pointer;" class="submitBtn <%=(showCancel === true)?"btnSmall":"btnLarge"%>" value="<%=formButton%>">
+
+                        <% if (showCancel === true) { %>
+                            <input type="submit" style="cursor: pointer;" class="submitBtn btnSmall redBtn" name="resetAction" value="cancel">
+                        <% } %>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </body>
+    <script src="javascript/manageCategories-navbar.js"></script>
+</html>

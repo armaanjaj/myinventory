@@ -1,0 +1,38 @@
+*{
+    padding: 0;
+    margin: 0;
+    font-family: "Google Sans",Roboto,RobotoDraft,Helvetica,Arial,sans-serif;
+}
+html{
+    overflow-y: scroll;
+}
+body{
+    background-color: #f0f2f5;
+}
+#navbar a{
+    color: black;
+}
+#navbar a:after{
+    background-color: black;
+}
+
+.container{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+    margin-top: 10rem;
+}
+.component{
+    padding: 10rem 1rem;
+    background: rgb(2,0,36);
+    border-radius: 12px;
+    background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(64,187,4,1) 0%, rgba(101,192,210,1) 100%);
+    box-shadow: 0 2px 4px rgb(0 0 0 / 10%), 0 8px 16px rgb(0 0 0 / 10%);
+}
+.component a{
+    color: white;
+    padding: 10rem 10rem;
+    font-size: 20px;
+    text-decoration: none;
+}

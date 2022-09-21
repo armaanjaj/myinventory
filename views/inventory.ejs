@@ -1,9 +1,20 @@
-<%- include("header") -%>
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>myinventory.com</title>
+        <link rel="stylesheet" type="text/css" href="css/footer.css">
+        <link rel="stylesheet" type="text/css" href="css/navbar.css">
+        <link rel="stylesheet" type="text/css" href="css/inventory.css">
+    </head>
+    <body>
 
-<div class="content">
-    <header class="content-header">
-        <h2>Welcome <%= name %>,<br> you've <%= count %> items in your inventory.</h2>
-    </header>
+    <%- include("navbar") -%>
+
+    <div class="content">
+        <header class="content-header">
+            <h2>Welcome <%= name %>,<br> you've <%= count %> items in your inventory.</h2>
+        </header>
 
     <article class="content-main">
         <div class="listTable">
@@ -17,19 +28,19 @@
 
                 <% items.forEach(item => { %>
                     <tr style="text-align: left;"></tr>
-                    <td><%=item.CategoryName%></td>
-                    <td><%=item.ItemName%></td>
-                    <td>$<%=item.Price%></td>
+                    <td><%=item.category_name%></td>
+                    <td><%=item.item_name%></td>
+                    <td>$<%=item.price%></td>
                     <td>
-                        <form method="POST" action="/">
-                            <input type="hidden" name="editItem" value="<%=item.ItemID%>">
+                        <form method="POST" action="/inventory">
+                            <input type="hidden" name="editItem" value="<%=item.item_id%>">
                             <input type="hidden" name="action" value="edit">
                             <input type="submit" style="cursor: pointer; padding: 3px 5px;" value="Edit">
                         </form>
                     </td>
                     <td>
-                        <form method="POST" action="/">
-                            <input type="hidden" name="deleteItem" value="<%=item.ItemID%>">
+                        <form method="POST" action="/inventory">
+                            <input type="hidden" name="deleteItem" value="<%=item.item_id%>">
                             <input type="hidden" name="action" value="delete">
                             <input type="submit" style="cursor: pointer; padding: 3px 5px;" value="Delete">
                         </form>
@@ -48,11 +59,11 @@
 <div class="editItemContainer">
     <div class="editItemForm">
         <h2>Edit Item</h2>
-        <form method="POST" action="/" class="addItemFormContainer">
+        <form method="POST" action="/inventory" class="addItemFormContainer">
             <div class="fieldDiv">
                 <select <%= (start_edit)?"":"disabled"%> class="field" name="category">
                     <% categories.forEach(cat => { %>
-                        <option <%=edit_category === cat.CategoryID?"selected":""%> value="<%=cat.CategoryID%>"><%=cat.CategoryName%></option>
+                        <option <%=edit_category === cat.category_id?"selected":""%> value="<%=cat.category_id%>"><%=cat.category_name%></option>
                     <% }) %>
                 </select>
             </div>
@@ -87,11 +98,11 @@
     <a href="javascript:void(1)" class="closebtn" onclick="closeOverlay()">&times;</a>
     <div class="overlay-content">
         <h2>Add Item</h2>
-        <form method="POST" action="/" class="addItemFormContainer">
+        <form method="POST" action="/inventory" class="addItemFormContainer">
             <div class="fieldDiv">
                 <select class="field" name="category">
                     <% categories.forEach(cat => { %>
-                        <option <%=edit_category === cat.CategoryID?"selected":""%> value="<%=cat.CategoryID%>"><%=cat.CategoryName%></option>
+                        <option <%=edit_category === cat.category_id?"selected":""%> value="<%=cat.category_id%>"><%=cat.category_name%></option>
                     <% }) %>
                 </select>
             </div>
