@@ -79,7 +79,7 @@
                         <div class="fieldDiv">
                             <input type="password" class="fields" name="password" id="passwordField" value="<%=form_password%>" maxlength="20" placeholder="Password"> 
                         </div>
-                        <div id="showButton" onmouseover="this.style.cursor = 'pointer'" <%=(form_password)?"onclick='toggle()'":""%> style="display: <%=display%>; background-color: black; padding: 1px 8px; color: white; border: 1px solid black; border-radius: 4px;"></div>
+                        <div id="showButton" onmouseover="this.style.cursor = 'pointer'" <%=(form_password)?"onclick=toggle()":""%> style="display: <%=display%>; background-color: black; padding: 1px 8px; color: white; border: 1px solid black; border-radius: 4px;"></div>
                         <% if (messageEmail === 'invalidPass') { %>
                             <div class="warning">
                                 <p><%=description1%></p>
@@ -134,13 +134,13 @@
                 document.getElementById("showButton").style.backgroundColor = "black";
                 document.getElementById("showButton").style.color = "white";
                 document.getElementById("showButton").innerText = "Show";
-            } else {
+            }
+            else {
                 document.getElementById("showButton").innerText = "Hide";
                 document.getElementById("showButton").style.backgroundColor = "white";
                 document.getElementById("showButton").style.color = "black";
                 document.getElementById("passwordField").type = "text";
             }
         }
-        ;
     </script>
 </html>

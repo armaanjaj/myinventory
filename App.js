@@ -8,11 +8,11 @@ app.set('view engine', 'ejs'); // uncomment when using ejs
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(express.static("public")); // uncomment when using CSS or images in the project
 var mysql = require('mysql');
-const port = process.env.port || 80;
-var sess = {
+const port = process.env.port || 443;
+let sess = {
     secret: "index",
-        saveUninitialized: true,
-        resave: true
+    saveUninitialized: true,
+    resave: true
 };
 app.use(session(sess));
 
@@ -37,7 +37,7 @@ app.get("/", (req, res)=>{
     sess = req.session;
     
     if(req.query.action && req.query.action === 'logout'){
-        sess = {};
+        // sess = {};
         req.session.destroy();
         res.redirect("/login");
         return;
@@ -67,7 +67,9 @@ app.post("/", (req, res)=>{
             con.release();
             if (err) {res.render("login", {message: "backendError", email:`${req.body.email}`, password:`${req.body.password}`, description: "Something went wrong! Please try agian."});};
 
-            if(result){
+            
+            if(result.length > 0){
+                // console.log(result[0]);
                 if(Boolean(result[0].active)){
                     if(result[0].password === req.body.password){
                         // update user object in the session
@@ -105,7 +107,7 @@ app.get("/inventory", (req, res)=>{
         res.redirect("/login");
         return;
     }
-    console.log(sess.user.first_name);
+    // console.log(sess.user.first_name);
 
     pool.getConnection((err, con)=>{
         if (err) throw err;
@@ -115,11 +117,28 @@ app.get("/inventory", (req, res)=>{
                 if (err) throw err;
                 con.release();
 
-                var resultLength = (result)?result.length:0;
+                let resultLength = (result)?result.length:0;
                 sess.totalItems = resultLength;
                 sess.categorylist = catResult;
                 sess.itemlist = result;
-                res.render("inventory", {name: sess.user.first_name, count: sess.totalItems, items: sess.itemlist, categories: sess.categorylist, start_edit: null, edit_category: null, edit_itemName: null, message: null, description: null, edit_price: null, itemName: null, price: null});
+                let renderObj = {
+                    name: sess.user.first_name,
+                    count: sess.totalItems,
+                    items: sess.itemlist,
+                    categories: sess.categorylist,
+                    scrollWindow: /^([crud])$/.test(sess.crud)?"true":"false",
+                    start_edit: null,
+
+                    edit_category: null,
+                    edit_itemName: null,
+                    edit_price: null,
+                    
+                    itemName: null,
+                    price: null,
+                    message: null,
+                    description: null
+                };
+                res.render("inventory", renderObj);
                 return;
             });
         });
@@ -131,7 +150,7 @@ app.post("/inventory", (req, res)=>{
 
     if(req.body.action && req.body.action === "delete"){
 
-        var itemid = req.body.deleteItem; // item id of the item to delete
+        let itemid = req.body.deleteItem; // item id of the item to delete
         
         pool.getConnection((err, con)=>{
             if (err) throw err;
@@ -139,13 +158,15 @@ app.post("/inventory", (req, res)=>{
             con.query(`DELETE FROM item WHERE item_id = '${itemid}'`, function (err, result) {
                 con.release();
                 if(err) throw err;
+
+                sess.crud = "d";
                 res.redirect("/");
             });
         });
     }
     else if(req.body.action && req.body.action === "edit"){
         
-        var itemid = req.body.editItem;  // item id of the item to edit
+        let itemid = req.body.editItem;  // item id of the item to edit
         
         pool.getConnection((err, con)=>{
             if (err) throw err;
@@ -156,57 +177,169 @@ app.post("/inventory", (req, res)=>{
                 // console.log("Here");
                 // console.log(result);
                 sess.edititem_id = itemid;  // item id in the session of the item to edit
-                res.render("inventory", {name: sess.user.first_name, count: sess.totalItems, items: sess.itemlist, categories: sess.categorylist, start_edit: true, edit_category: result[0].category_id, edit_itemName: result[0].item_name, message: null, description: null, edit_price: result[0].price, itemName: null, price: null});
+                
+                let renderObj = {
+                    name: sess.user.first_name,
+                    count: sess.totalItems,
+                    items: sess.itemlist,
+
+                    edit_category: result[0].category,
+                    edit_itemName: result[0].item_name,
+                    edit_price: result[0].price,
+
+                    start_edit: true,
+                    scrollWindow: "true",
+                    
+                    categories: sess.categorylist,
+                    itemName: null,
+                    price: null,
+
+                    message: null,
+                    description: null
+                };
+                res.render("inventory", renderObj);
             });
         });
     }
     else if(req.body.action && req.body.action === "update"){
-        var itemid = sess.edititem_id;  // item id of the item to edit from the session
-        var category = req.body.category;
-        var itemName = req.body.edit_itemName;
-        var itemPrice = Number(req.body.edit_price);
+        let itemid = sess.edititem_id;  // item id of the item to edit from the session
+        let category = req.body.category;
+        let itemName = req.body.edit_itemName;
+        let itemPrice = req.body.edit_price;
+
+        let renderObj = {
+            name: sess.user.first_name,
+            count: sess.totalItems,
+            items: sess.itemlist,
+
+            edit_category: category,
+            edit_itemName: itemName,
+            edit_price: itemPrice,
+
+            start_edit: true,
+            scrollWindow: "true",
+            
+            categories: sess.categorylist,
+            itemName: null,
+            price: null,
+        };
         
-        if(category==="" || category === null || itemName==="" || itemName === null || isNaN(itemPrice)){
-            res.render("inventory", {name: sess.user.First_name, count: sess.totalItems, items: sess.itemlist, categories: sess.categorylist, start_edit: null, edit_category: null, edit_itemName: null, message: null, description: null, edit_price: null, itemName: null, price: null});
+        if(itemName==="" || itemName === null){
+            renderObj = {
+                message: "invalidName",
+                description: "This field cannot be empty"
+            };
+            res.render("inventory", renderObj);
             return;
         }
-        else{
-            pool.getConnection((err, con)=>{
-                if (err) throw err;
-
-                con.query(`UPDATE item SET category = '${category}', item_name = '${itemName}', price = '${itemPrice}' WHERE item_id = '${itemid}'`, function (err, result) {
-                    con.release();
-
-                    if(err) throw err;
-
-                    res.redirect("/");
-                    return;
-                });
-            });
+        else if(itemPrice === "" || itemPrice === null){
+            renderObj = {
+                message: "invalidPrice",
+                description: "This field cannot be empty"
+            };
+            res.render("inventory", renderObj);
+            return;
+        }   
+        
+        if(!isNaN(parseFloat(itemName))){
+            renderObj = {
+                message: "invalidName",
+                description: "Enter a valid name"
+            };
+            res.render("inventory", renderObj);
+            return;
         }
+        else if(isNaN(parseFloat(itemPrice))){
+            renderObj = {
+                message: "invalidPrice",
+                description: "Enter a valid price"
+            };
+            res.render("inventory", renderObj);
+            return;
+        }
+        
+        pool.getConnection((err, con)=>{
+            if (err) throw err;
+
+            con.query(`UPDATE item SET category = '${category}', item_name = '${itemName}', price = '${parseFloat(itemPrice)}' WHERE item_id = '${itemid}'`, function (err, result) {
+                con.release();
+
+                if(err) throw err;
+
+                sess.crud = "u";
+                res.redirect("/");
+                return;
+            });
+        });
     }
     else{
-        var category = req.body.category;
-        var itemName = req.body.itemName;
-        var itemPrice = Number(req.body.price);
+        let category = req.body.category;
+        let itemName = req.body.itemName;
+        let itemPrice = req.body.price;
 
-        if(category==="" || category === null || itemName==="" || itemName === null || isNaN(itemPrice)){
-            res.render("inventory", {name: sess.user.First_name, count: sess.totalItems, items: sess.itemlist, categories: sess.categorylist, start_edit: null, edit_category: null, edit_itemName: null, message: null, description: null, edit_price: null, itemName: null, price: null});
+        let renderObj = {
+            name: sess.user.first_name,
+            count: sess.totalItems,
+            items: sess.itemlist,
+
+            edit_category: category,
+            edit_itemName: itemName,
+            edit_price: itemPrice,
+
+            start_edit: true,
+            scrollWindow: "true",
+            
+            categories: sess.categorylist,
+            itemName: null,
+            price: null
+        };
+
+        if(itemName==="" || itemName === null){
+            renderObj = {
+                message: "invalidName",
+                description: "This field cannot be empty"
+            };
+            res.render("inventory", renderObj);
             return;
         }
-        else{
-            pool.getConnection((err, con)=>{
-                if (err) throw err;
-                con.query(`INSERT INTO item (item_id, category, item_name, price, owner) values ('0', '${category}', '${itemName}', '${itemPrice}', '${sess.user.email}')`, function (err, result, fields) {
-                    con.release();
-                    
-                    if(err) throw err;
-
-                    res.redirect("/");
-                    return;
-                });
-            });
+        else if(itemPrice === "" || itemPrice === null){
+            renderObj = {
+                message: "invalidPrice",
+                description: "This field cannot be empty"
+            };
+            res.render("inventory", renderObj);
+            return;
+        }   
+        
+        if(!isNaN(parseFloat(itemName))){
+            renderObj = {
+                message: "invalidName",
+                description: "Enter a valid name"
+            };
+            res.render("inventory", renderObj);
+            return;
         }
+        else if(isNaN(parseFloat(itemPrice))){
+            let renderObj = {
+                message: "invalidPrice",
+                description: "Enter a valid price"
+            };
+            res.render("inventory", renderObj);
+            return;
+        }
+
+        pool.getConnection((err, con)=>{
+            if (err) throw err;
+            con.query(`INSERT INTO item (item_id, category, item_name, price, owner) values ('0', '${category}', '${itemName}', '${itemPrice}', '${sess.user.email}')`, function (err, result, fields) {
+                con.release();
+                
+                if(err) throw err;
+
+                sess.crud = "c";
+                res.redirect("/");
+                return;
+            });
+        });
     }
 })
 
@@ -239,7 +372,33 @@ app.get("/admin", (req, res)=>{
                         sess.userlist = userlist;
                         sess.rolelist = rolelist;
 
-                        res.render("manageUsers", {users: sess.userlist, roles: sess.rolelist, sectionHead: "Add User", activeCheck: false, formButton: "Save", finalAction: "add", disabled: "false", display: "none", message: null, description: null, form_email: null, messageEmail: null, showCancel: false, form_password: null, form_firstName: null, form_lastName: null, userRole: null, messageRole: null});
+                        let renderObj = {
+                            users: sess.userlist,
+                            roles: sess.rolelist,
+
+                            sectionHead: "Add User",
+                            formButton: "Save",
+                            finalAction: "add",
+                            disabled: "false",
+                            display: "none",
+
+                            activeCheck: false,
+                            showCancel: false,
+
+                            form_email: null,
+                            form_password: null,
+                            form_firstName: null,
+                            form_lastName: null,
+
+                            messageEmail: null,
+                            userRole: null,
+                            messageRole: null,
+                            
+                            message: null,
+                            description: null,
+                        }
+
+                        res.render("manageUsers", renderObj);
                         return;
                     });
                 });
@@ -255,7 +414,20 @@ app.get("/admin", (req, res)=>{
                     
                     sess.categorylist = categorylist;
 
-                    res.render("manageCategories", {categories: sess.categorylist, sectionHead: "Add Category", formButton: "Save", form_catName: null, messageCatName: null, finalAction: "add", description: null, showCancel: false});
+                    let renderObj = {
+                        categories: sess.categorylist,
+                        sectionHead: "Add Category",
+                        formButton: "Save",
+                        finalAction: "add",
+
+                        form_catName: null,
+                        messageCatName: null,
+
+                        description: null,
+                        showCancel: false
+                    }
+
+                    res.render("manageCategories", renderObj);
                     return;
                 });
             });
@@ -273,7 +445,7 @@ app.post("/admin", (req, res)=>{
 
             switch(req.body.action){
                 case "edit":{
-                    var cat_id = req.body.editCategory;
+                    let cat_id = req.body.editCategory;
 
                     pool.getConnection((err, con)=>{
                         if (err) throw err;
@@ -290,8 +462,8 @@ app.post("/admin", (req, res)=>{
                     break;
                 }
                 case "update":{
-                    var cat_id = sess.editcategory_id;
-                    var cat_name = req.body.catName;
+                    let cat_id = sess.editcategory_id;
+                    let cat_name = req.body.catName;
 
                     pool.getConnection((err, con)=>{
                         if (err) throw err;
@@ -307,7 +479,7 @@ app.post("/admin", (req, res)=>{
                     break;
                 }
                 case "add":{
-                    var cat_name = req.body.catName;
+                    let cat_name = req.body.catName;
 
                     pool.getConnection((err, con)=>{
                         if (err) throw err;
@@ -334,7 +506,7 @@ app.post("/admin", (req, res)=>{
 
             switch(req.body.action){
                 case "edit":{
-                    var email = req.body.editUser;
+                    let email = req.body.editUser;
 
                     pool.getConnection((err, con)=>{
                         if (err) throw err;
@@ -352,12 +524,12 @@ app.post("/admin", (req, res)=>{
                     break;
                 }
                 case "update":{
-                    var email = sess.editUseremail;
-                    var firstName = req.body.firstName;
-                    var lastName = req.body.lastName;
-                    var password = req.body.password;
-                    var isActive = (req.body.isActive)?"1":"0";
-                    var role = req.body.userRole;
+                    let email = sess.editUseremail;
+                    let firstName = req.body.firstName;
+                    let lastName = req.body.lastName;
+                    let password = req.body.password;
+                    let isActive = (req.body.isActive)?"1":"0";
+                    let role = req.body.userRole;
 
                     pool.getConnection((err, con)=>{
                         if (err) throw err;
@@ -373,7 +545,7 @@ app.post("/admin", (req, res)=>{
                     break;
                 }
                 case "delete":{
-                    var email = sess.deleteUser;
+                    let email = sess.deleteUser;
 
                     pool.getConnection((err, con)=>{
                         if (err) throw err;
@@ -389,12 +561,12 @@ app.post("/admin", (req, res)=>{
                     break;                 
                 }
                 case "add":{
-                    var email = sess.editUseremail;
-                    var firstName = req.body.firstName;
-                    var lastName = req.body.lastName;
-                    var password = req.body.password;
-                    var isActive = (req.body.isActive)?"1":"0";
-                    var role = req.body.userRole;
+                    let email = sess.editUseremail;
+                    let firstName = req.body.firstName;
+                    let lastName = req.body.lastName;
+                    let password = req.body.password;
+                    let isActive = (req.body.isActive)?"1":"0";
+                    let role = req.body.userRole;
 
                     pool.getConnection((err, con)=>{
                         if (err) throw err;
@@ -428,7 +600,7 @@ app.get("/account", (req, res)=>{
         return;
     }
 
-    var fullName = sess.user.first_name + " " + sess.user.last_name;
+    let fullName = sess.user.first_name + " " + sess.user.last_name;
     res.render("account", {fullName: fullName, email: sess.user.email, firstName: sess.user.first_name, lastName: sess.user.last_name, messageFName: null, messageLName: null, currPassword: null, messageCPass: null, description: null, newPassword: null, messageNPass: null, retypePassword: null, messageRENPass: null, showChangePass: false})
     return;
 })
