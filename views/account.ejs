@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>${fullName} | Home nVentory</title>
+        <link rel="stylesheet" type="text/css" href="css/footer.css">
+        <link rel="stylesheet" type="text/css" href="css/navbar.css">
+        <link rel="stylesheet" type="text/css" href="css/accountPage.css">
+    </head>
+    <body>
+
+        <%- include("navbar") -%>
+
+        <div class="container">
+            <div class="detailsInternal">
+                <span class="components"><h3>Hi <%=fullName%>, your account</h3></span>
+
+                <!--Details button-->
+                <span>
+                    <form class="formContainer" action="account" method="POST">
+                        <span class="components">
+                            <label for="email">Email:</label>
+                            <input type="text" class="fields" id="email" name="email" value="<%=email%>" readonly>
+                        </span>
+                        <span class="components">
+                            <label for="firstName">First name:</label>
+                            <input type="text" class="fields" name="firstName" value="<%=firstName%>">
+                        </span>
+                        <% if (messageFName === 'invalidFName') { %>
+                            <div class="warning">
+                                <p><%=description%></p>
+                            </div>
+                        <% } %>
+                        <span class="components">
+                            <label for="lastName">Last name:</label>
+                            <input type="text" class="fields" name="lastName" value="<%=lastName%>">
+                        </span>
+                        <% if (messageLName === 'invalidLName') { %>
+                            <div class="warning">
+                                <p><%=description%></p>
+                            </div>
+                        <% } %>
+                        <span class="components">
+                            <input type="hidden" name="action" value="updateGeneral">
+                            <input type="submit" style="cursor: pointer;" class="fields saveBtn btn" value="Save changes">
+                        </span>
+                    </form>
+                </span>
+
+                <!--Change password button-->
+                <span class="components">
+                    <input type="button" id="changePasswordBtn" style="cursor: pointer;" class="fields btn showBtn" name="changePassword" value="Change password">
+                </span>
+
+                <!--Change password form-->
+                <div class="changePassword" id="changePassword" style="display: none;">
+                    <form class="changePasswordForm" action="account" method="POST">
+                        <label for="currPassword">Current </label>
+                        <input type="password" class="fields" name="currPassword" value="<%=currPassword%>"> <br>
+                        <% if (messageCPass === 'invalidCPass') { %>
+                            <div class="warning">
+                                <p><%=description%></p>
+                            </div>
+                        <% } %>
+                        <label for="newPassword">New </label>
+                        <input type="password" class="fields" name="newPassword" value="<%=newPassword%>"> <br>
+                        <% if (messageNPass === 'invalidNPass') { %>
+                            <div class="warning">
+                                <p><%=description%></p>
+                            </div>
+                        <% } %>
+                        <label for="retypePassword">Retype new </label>
+                        <input type="password" class="fields" name="retypePassword" value="<%=retypePassword%>"> <br>
+                        <% if (messageRENPass === 'invalidRENPass') { %>
+                            <div class="warning">
+                                <p><%=description%></p>
+                            </div>
+                        <% } %>
+                        <input type="hidden" name="action" value="updatePassword">
+                        <input type="submit" style="cursor: pointer;" class="fields saveBtn btn" value="Save changes">
+                    </form>
+                </div>
+
+                <div class="deactivateZone">
+                    <span class="deactivateComponents">
+                        <h3>Danger Zone</h3>
+                    </span>
+                    <span class="deactivateComponents">
+                        <form action="account" method="POST">
+                            <input type="hidden" name="action" value="deactivate">
+                            <input type="submit" style="cursor: pointer;" class="deactivateBtn" value="Deactivate" onclick="showAlert()">
+                        </form>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <%- include("footer") -%>
+
+        <input type="hidden" name="showChangePass" value="<%= showChangePass %>">
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script>
+            window.onload = () => {
+                document.getElementById("year").innerText = new Date().getFullYear();
+                document.getElementById("email").disabled = "true";
+                if (document.getElementsByName("showChangePass")[0].value === "true") {
+                    document.getElementById("changePassword").style.display = "block";
+                    window.scroll(0, 400);
+                }
+            };
+            $("input#changePasswordBtn").on("click", function(){
+                $("div#changePassword").slideToggle();
+            });
+//            function displayForm() {
+//                if (document.getElementById("changePassword").style.display === "block") {
+//                    document.getElementById("changePassword").style.display = "none";
+//                } else if (document.getElementById("changePassword").style.display === "none") {
+//                    document.getElementById("changePassword").style.display = "block";
+//                }
+//            }
+            function showAlert() {
+                alert("You will be signed out from all devices.");
+            }
+        </script>
+        <script src="javascript/account-navbar.js"></script>
+    </body>
+</html>

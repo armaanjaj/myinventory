@@ -105,6 +105,7 @@ app.get("/inventory", (req, res)=>{
         res.redirect("/login");
         return;
     }
+    console.log(sess.user.first_name);
 
     pool.getConnection((err, con)=>{
         if (err) throw err;
@@ -418,6 +419,24 @@ app.post("/admin", (req, res)=>{
 
 });
 
+// account route
+app.get("/account", (req, res)=>{
+    sess = req.session;
+
+    if(!sess.user){
+        res.redirect("/login");
+        return;
+    }
+
+    var fullName = sess.user.first_name + " " + sess.user.last_name;
+    res.render("account", {fullName: fullName, email: sess.user.email, firstName: sess.user.first_name, lastName: sess.user.last_name, messageFName: null, messageLName: null, currPassword: null, messageCPass: null, description: null, newPassword: null, messageNPass: null, retypePassword: null, messageRENPass: null, showChangePass: false})
+    return;
+})
+
+app.post("/account", (req, res)=>{
+    res.send("Account Page");
+})
+
 app.get("/reset", (req, res)=>{
     res.send("Reset Page");
 })
@@ -427,9 +446,6 @@ app.get("/reset-password", (req, res)=>{
 })
 app.get("/new-account", (req, res)=>{
     res.send("New account Page");
-})
-app.get("/account", (req, res)=>{
-    res.send("Account Page");
 })
 
 // handling status errors
