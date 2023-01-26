@@ -1,9 +1,9 @@
 #headSection{
     width: 100%;
     display: inline-block;
-    position: fixed;
+    /* position: fixed; */
     top: 0;
-    z-index: 1;
+    z-index: 999;
     border: 1px solid black;
 }
 #navbar{

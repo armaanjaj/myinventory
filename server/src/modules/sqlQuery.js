@@ -17,6 +17,7 @@ const query = (query, data, callback) => {
             con.release();
             
             if (error) {
+                console.log(error)
 				callback({
                     status: 500,
                     message: "Internal Server Error. Please try again.",

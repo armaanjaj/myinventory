@@ -4,7 +4,8 @@
   "description": "This project is about a reliable inventory keeping web application which is easy to use and free of cost.",
   "main": "App.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js"
   },
   "repository": {
     "type": "git",

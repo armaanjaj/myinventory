@@ -30,53 +30,6 @@ app.use("/store/signup", signupRoute);
 app.use("/store/inventory", inventoryRoute);
 app.use("/store/account", accountRoute);
 
-
-// inventory route
-// app.get("/inventory", (req, res)=>{
-//     sess = req.session;
-
-//     if(!sess.user){
-//         res.redirect("/login");
-//         return;
-//     }
-//     // console.log(sess.user.first_name);
-
-//     pool.getConnection((err, con)=>{
-//         if (err) throw err;
-//         con.query(`SELECT * FROM item i join category c on c.category_id = i.category WHERE owner = '${sess.user.email}'`, function (err, result, fields) {
-//             if (err) throw err;
-//             con.query('SELECT * FROM category', function (errCat, catResult, fieldsCat) {
-//                 if (err) throw err;
-//                 con.release();
-
-//                 let resultLength = (result)?result.length:0;
-//                 sess.totalItems = resultLength;
-//                 sess.categorylist = catResult;
-//                 sess.itemlist = result;
-//                 let renderObj = {
-//                     name: sess.user.first_name,
-//                     count: sess.totalItems,
-//                     items: sess.itemlist,
-//                     categories: sess.categorylist,
-//                     scrollWindow: /^([crud])$/.test(sess.crud)?"true":"false",
-//                     start_edit: null,
-
-//                     edit_category: null,
-//                     edit_itemName: null,
-//                     edit_price: null,
-                    
-//                     itemName: null,
-//                     price: null,
-//                     message: null,
-//                     description: null
-//                 };
-//                 res.render("inventory", renderObj);
-//                 return;
-//             });
-//         });
-//     });
-// })
-
 // app.post("/inventory", (req, res)=>{
 //     sess = req.session;
 
