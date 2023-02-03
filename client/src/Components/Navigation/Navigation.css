@@ -1,18 +1,21 @@
 #headSection{
     width: 100%;
-    display: inline-block;
-    /* position: fixed; */
+    /* display: inline-block; */
+    position: fixed;
     top: 0;
     z-index: 999;
-    border: 1px solid black;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
 }
-#navbar{
+.navbar{
     display: flex;
     flex-direction: row;
     justify-content: center;
     padding: 5px 0px;
 }
-#navbar a{
+.navbar a{
     position: relative;
     text-decoration: none;
     /* color: white; */
@@ -27,7 +30,7 @@
 .active{
     border-bottom: 1.5px solid black;
 }
-#navbar a:after{
+.navbar a:after{
     content: '';
     background-color: var(--underlineAfterBackColor,white);
     height: 1px;
@@ -39,6 +42,6 @@
     transform-origin: bottom left;
     transition: transform 0.5s ease-out;
 }
-#navbar a:hover:after{
+.navbar a:hover:after{
     transform: scaleX(1);
 }
