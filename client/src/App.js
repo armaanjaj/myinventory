@@ -1,10 +1,9 @@
-import "./App.css";
 import {
     BrowserRouter as Router,
     Routes,
     Route,
-    Navigate,
 } from "react-router-dom";
+import Navigation from "./Components/Navigation/Navigation";
 
 import Inventory from "./Pages/Inventory";
 import Login from "./Pages/Login";
@@ -14,6 +13,7 @@ function App() {
     return (
         <>
             <Router>
+                <Navigation/>
                 <Routes>
                     <Route path="*" element={<Login />} />
                     <Route path="/" element={<Login />} />
