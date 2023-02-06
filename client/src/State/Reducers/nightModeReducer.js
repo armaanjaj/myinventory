@@ -9,7 +9,7 @@ const reducer = (
 ) => {
     if (action.payload === true) {
         return {
-            bgNavbar: "#001819",
+            bgNavbar: "#001819d6",
             bgCard: "#2c2c2cd6",
             colorNavbar: "#b1fcff",
             colorCard: "#ffffff",

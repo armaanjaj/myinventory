@@ -5,7 +5,7 @@ import {
 } from "react-router-dom";
 import Navigation from "./Components/Navigation/Navigation";
 
-import Inventory from "./Pages/Inventory";
+import Inventory from "./Pages/Inventory/Inventory";
 import Login from "./Pages/Login";
 import Signup from "./Pages/Signup";
 

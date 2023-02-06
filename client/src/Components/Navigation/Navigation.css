@@ -1,4 +1,4 @@
-#headSection{
+#headSection {
     width: 100vw;
     position: fixed;
     top: 0;
@@ -14,13 +14,18 @@
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
     height: 8vh;
     padding: 0 10vh 0 15vh;
+    backdrop-filter: blur(30px);
 }
-.navbar{
+.navbar,
+.noMobile-navbar-links {
     display: flex;
     flex-direction: row;
     justify-content: center;
 }
-.navbar a{
+.mobile-navbar {
+    visibility: hidden;
+}
+.navbar a {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -31,13 +36,55 @@
     font-size: 1rem;
     cursor: pointer;
 }
-.navbar-logo{
+.navbar-logo {
     font-size: 20px;
-    font-family: 'Bungee', cursive;
+    font-family: "Bungee", cursive;
 }
-.navbar-logo-mode-icon{
+.navbar-logo-mode-icon {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+}
+
+.mobile-navbar-links {
+    display: none;
+}
+
+@media screen and (max-width: 767px) {
+    .noMobile-navbar {
+        display: none;
+    }
+    .mobile-navbar {
+        visibility: visible;
+    }
+    #headSection {
+        justify-content: space-between;
+        padding: 0;
+    }
+    .noMobile-navbar-links {
+        display: none;
+    }
+    .mobile-navbar-links {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding-right: 6vw;
+    }
+    .mobile-navbar-links-box{
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        justify-content: left;
+        align-items: center;
+        top: calc((99%+8vh));
+        left: 0;
+        width: 100%;
+    }
+    .mobile-navbar-links-box a{
+        border-bottom: 1px solid black;
+        width: 80%;
+        padding: 2rem;
+    }
 }

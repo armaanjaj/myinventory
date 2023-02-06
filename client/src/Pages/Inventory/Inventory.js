@@ -1,10 +1,11 @@
 import React from "react";
+import Footer from "../../Components/Footer/Footer";
 import CancelIcon from "@mui/icons-material/Cancel";
 import EditIcon from "@mui/icons-material/Edit";
-import "./Body.css";
+import "./Inventory.css";
 import { useSelector } from "react-redux";
 
-function Body() {
+function Inventory() {
 
     const mode = useSelector(state => state.darkMode);
 
@@ -55,6 +56,7 @@ function Body() {
                                         <select
                                             className="field"
                                             name="category"
+                                            style={{backgroundColor:`${mode.bgCard}`, color:`${mode.colorCard}`}}
                                         >
                                             <option disabled selected value={null}>
                                                 -Select Category-
@@ -68,6 +70,7 @@ function Body() {
                                             className="field"
                                             name="itemName"
                                             placeholder="Item name"
+                                            style={{backgroundColor:`${mode.bgCard}`, color:`${mode.colorCard}`}}
                                         />
                                     </div>
                                     <div className="warning">
@@ -79,6 +82,7 @@ function Body() {
                                             className="field"
                                             name="price"
                                             placeholder="Item price"
+                                            style={{backgroundColor:`${mode.bgCard}`, color:`${mode.colorCard}`}}
                                         />
                                     </div>
                                     <div className="warning">
@@ -98,8 +102,9 @@ function Body() {
                     </div>
                 </div>
             </div>
+            <Footer/>
         </>
     );
 }
 
-export default Body;
+export default Inventory;
