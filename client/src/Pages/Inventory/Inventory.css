@@ -5,6 +5,7 @@
     background-repeat: no-repeat;
     background-size: cover;
     min-height: 100vh;
+    overflow-x: hidden;
 }
 .inventory-body-content {
     padding: 15vh 8vw 15vh 8vw;
@@ -17,7 +18,7 @@
     flex-wrap: wrap;
 }
 .inventory-body-list-left {
-    height: calc((55vh + 2rem));
+    min-height: calc((55vh + 2rem));
     width: 50vw;
     margin: 2rem;
     border-radius: 10px;
@@ -27,9 +28,13 @@
     padding: 0 0 2rem 0;
 }
 .inventory-table-head {
-    margin: 2rem 0 2rem 2rem; /*top right bottom left i.e. clock wise*/
+    margin: 2rem; /*top right bottom left i.e. clock wise*/
     font-size: 20px;
     font-weight: bold;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
 }
 table.table {
     margin: 2rem;
@@ -40,9 +45,6 @@ table.table {
 }
 table.table tbody tr td, table.table tbody tr th{
     width: 10rem;
-}
-table.table tbody tr {
-    border-radius: 5px;
 }
 .inventory-body-list-action.btn-edit{
     cursor: pointer;
@@ -100,15 +102,33 @@ table.table tbody tr {
     justify-content: center;
     align-items: center;
 }
+.inventory-body-searchbox{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+.search-item{
+    padding: 0.2rem;
+    width: 10rem;
+    text-align: left;
+    border-radius: 6px;
+    outline: none;
+    border: 1px solid #dddfe2;
+}
 
 @media screen and (max-width: 767px) {
+    .inventory-body-content {
+        padding-left: 4vw;
+        padding-right: 4vw;
+    }
     .inventory-body-list-left {
         width: 100vw;
         margin: 0 0 2rem 0;
     }
     .inventory-body-forms{
         margin: 0 2rem 0 2rem;
-        padding: 2rem 2.5rem 2rem 2.5rem;
+        padding: 2rem 3rem 2rem 3rem;
     }
     table.table {
         margin: 1rem;
