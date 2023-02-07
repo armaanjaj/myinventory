@@ -6,14 +6,13 @@ import {
 import Navigation from "./Components/Navigation/Navigation";
 
 import Inventory from "./Pages/Inventory/Inventory";
-import Login from "./Pages/Login";
-import Signup from "./Pages/Signup";
+import Login from "./Pages/Login/Login";
+import Signup from "./Pages/Signup/Signup";
 
 function App() {
     return (
         <>
             <Router>
-                <Navigation/>
                 <Routes>
                     <Route path="*" element={<Login />} />
                     <Route path="/" element={<Login />} />

@@ -2,11 +2,12 @@ import React from "react";
 import "./Footer.css"
 import GitHubIcon from '@mui/icons-material/GitHub';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
+import Logo from "../Logo/Logo";
 
 function Footer() {
     return (
         <footer id="foot">
-            <div id="logoName">MYINVENTORY</div>
+            <div id="logoName"><Logo/></div>
             <div id="linkContainer">
                 <div className="footLink about">
                     <div className="sectionHead">ABOUT</div>
@@ -17,7 +18,7 @@ function Footer() {
                 <div className="footLink professional">
                     <div className="sectionHead">PROFESSIONALS</div>
                     <a href="/">Add your item</a>
-                    <a href="https://github.com/armaanjaj/myinventory">Contribute to MYINVENTORY</a>
+                    <a href="https://github.com/armaanjaj/myinventory">Contribute to project</a>
                 </div>
                 <div className="footLink follow">
                     <a href="https://github.com/armaanjaj" target={"_blank"}><GitHubIcon/></a>

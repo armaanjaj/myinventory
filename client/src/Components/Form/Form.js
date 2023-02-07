@@ -1,8 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import "./Form.css"
+import "./Form.css";
 
-function Form({ formHead, formFoot, formData, handlers }) {
+function Form({ formHead, formFoot, formData, formButton, handlers }) {
     return (
         <div className="parent">
             <div className="container">
@@ -26,20 +26,39 @@ function Form({ formHead, formFoot, formData, handlers }) {
                         </div>
                     ))}
                     <div className="fieldDiv">
-                        <input type="submit" className="btn" value={formHead} />
+                        <input
+                            type="submit"
+                            className="btn"
+                            value={formButton}
+                        />
                     </div>
-                    {formHead === "Login" && (
-                        <div className="fieldDiv">
-                            <Link to={"/forgotpassword"} target="_blank">
-                                Forgotten password?
-                            </Link>
-                        </div>
-                    )}
-                    <div className="divider"></div>
-                    <div className="fieldDiv">
-                        <Link to={formFoot.link} className="newAccLink">
-                            {formFoot.name}
-                        </Link>
+                    <div className="auth-form-help-links">
+                        {formButton === "Log in" ? (
+                            <>
+                                <div className="fieldDiv">
+                                    <Link
+                                        to={"/forgotpassword"}
+                                        className="auth-form-forgotpassword"
+                                        target="_blank"
+                                    >
+                                        Forgot password?
+                                    </Link>
+                                </div>
+                                <div className="fieldDiv">
+                                    <Link to={"/signup"} className="newAccLink">
+                                    Don't have an account? <span>Sign up</span>
+                                    </Link>
+                                </div>
+                            </>
+                        ):(
+                            <>
+                                <div className="fieldDiv">
+                                    <Link to={"/login"} className="newAccLink">
+                                    Already have an account? <span>Log in</span>
+                                    </Link>
+                                </div>
+                            </>
+                        )}
                     </div>
                 </form>
             </div>

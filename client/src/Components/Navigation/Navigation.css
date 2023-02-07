@@ -36,10 +36,6 @@
     font-size: 1rem;
     cursor: pointer;
 }
-.navbar-logo {
-    font-size: 20px;
-    font-family: "Bungee", cursive;
-}
 .navbar-logo-mode-icon {
     display: flex;
     flex-direction: column;

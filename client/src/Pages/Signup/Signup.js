@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import Form from "../Components/Form/Form";
+import Form from "../../Components/Form/Form";
+import Logo from "../../Components/Logo/Logo";
+import "./Signup.css"
 
 const SIGNUP_URL = "/store/signup";
 
@@ -66,9 +68,13 @@ function Signup() {
     };
 
     return (
-        <div>
-            <Form
-                formHead={"Signup"}
+        <div className="signup-body-main">
+            <div className="signup-body-content">
+                <div className="signup-body-content-left"></div>
+                <div className="signup-body-content-center">
+                <Form
+                formHead={<Logo/>}
+                // formHead={"Sign up for free"}
                 formFoot={{
                     name: "Already have an account",
                     link: "/login",
@@ -79,7 +85,7 @@ function Signup() {
                             key: "fName",
                             type: "text",
                             name: "fName",
-                            placeholder: "Enter your first Name",
+                            placeholder: "Enter your first name",
                             handler: (e) => setFirstName(e.target.value),
                             error: firstNameError,
                         },
@@ -87,7 +93,7 @@ function Signup() {
                             key: "lName",
                             type: "text",
                             name: "lName",
-                            placeholder: "Enter your last Name",
+                            placeholder: "Enter your last name",
                             handler: (e) => setLastName(e.target.value),
                             error: lastNameError,
                         },
@@ -109,10 +115,14 @@ function Signup() {
                         },
                     ],
                 }}
+                formButton={"Sign up for free"}
                 handlers={{
                     formHandler: handleSignup,
                 }}
             />
+                </div>
+                <div className="signup-body-content-right"></div>
+            </div>
         </div>
     );
 }

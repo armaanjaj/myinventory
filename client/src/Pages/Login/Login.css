@@ -1,0 +1,22 @@
+.login-body-main{
+    width: 100vw;
+    height: 100vh;
+}
+.login-body-content{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.login-body-content-left{
+    background: url("https://images.pexels.com/photos/6169659/pexels-photo-6169659.jpeg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 50vw;
+    height: 100vh;
+}
+.login-body-content-right{
+    width: 50vw;
+    height: 100vh;
+}

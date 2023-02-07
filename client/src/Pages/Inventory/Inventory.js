@@ -6,6 +6,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import CloseIcon from "@mui/icons-material/Close";
 import "./Inventory.css";
 import { useSelector } from "react-redux";
+import Navigation from "../../Components/Navigation/Navigation";
 
 function Inventory() {
     const mode = useSelector((state) => state.darkMode);
@@ -91,6 +92,7 @@ function Inventory() {
 
     return (
         <>
+        <Navigation/>
             <div className="inventory-body-main">
                 <div className="inventory-body-content">
                     <div className="inventory-body-list">
@@ -152,9 +154,9 @@ function Inventory() {
                                         <th>Price</th>
                                         <th colSpan={2}>Actions</th>
                                     </tr>
-                                    {inventoryArray.map((item) => (
+                                    {inventoryArray.map((item, i) => (
                                         <tr
-                                            key={item}
+                                            key={i}
                                             style={{ textAlign: "left" }}
                                         >
                                             <td>{item.category}</td>

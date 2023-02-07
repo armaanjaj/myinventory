@@ -1,6 +1,3 @@
-body{
-    background-color: #f0f2f5;
-}
 .parent{
     display: flex;
     flex-direction: row;
@@ -11,13 +8,13 @@ body{
 .container{
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    /* justify-content: center; */
     align-items: center;
     background-color: white;
     padding: 20px 85px;
-    padding-bottom: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgb(0 0 0 / 10%), 0 8px 16px rgb(0 0 0 / 10%);
+    /* padding-bottom: 20px; */
+    /* border-radius: 8px; */
+    /* box-shadow: 0 2px 4px rgb(0 0 0 / 10%), 0 8px 16px rgb(0 0 0 / 10%); */
 }
 .formContainer{
     display: flex;
@@ -25,61 +22,65 @@ body{
     justify-content: center;
     align-items: center;
 }
-.divider{
-    margin: 20px 16px;
-    width: 20rem;
-    height: 2px;
-    background-color: #dadde1;
-}
 .fieldDiv{
-    padding: 6px 0px;
+    padding: 0.5rem 0px;
 }
 .fields{
-    border: 1px solid #dddfe2;
-    border-radius: 6px;
-    font-size: 17px;
+    border: 1px solid #a3a5a7;
+    border-radius: 20px;
+    font-size: 14px;
     padding: 14px 16px;
-    width: 330px;
+    width: 20.5rem;
 }
 .fields:focus{
     outline: none;
+}
+.fieldDiv .auth-form-forgotpassword{
+    text-decoration: none;
+    padding: 0;
+    color: black;
+    border: none;
 }
 .inputError{
     border-color: #D4372C;
     box-shadow: 0px 0px 0px 3px #f6d7d5;
 }
 .btn{
-    background-color: #e16800;
+    background-color: #2d8cb8;
     border: none;
-    border-radius: 6px;
-    font-size: 20px;
-    line-height: 48px;
-    padding: 0 16px;
-    width: 364px;
+    border-radius: 20px;
+    font-size: 16px;
+    line-height: 2.5rem;
+    padding: 0;
+    width: 20.5rem;
     color: white;
-    margin-bottom: 10px;
+    /* margin-bottom: 10px; */
     transition: 200ms;
 }
 .btn:hover{
     cursor: pointer;
-    background-color: #cf6102;
+    /* background-color: #cf6102; */
 }
 .newAccLink{
     text-decoration: none;
-    color: white;
-    padding: 16px 35px;
-    background-color: #42b72a;
+    /* font-size: 14px; */
+    color: black;
     border: none;
-    border-radius: 6px;
-    font-size: 17px;
-    line-height: 48px;
 }
-.newAccLink:hover{
-    background-color: #3eac28;
-    transition: 200ms;
+.newAccLink span{
+    color: #2d8cb8;
 }
 .warning{
     font-weight: bolder;
     font-size: 11px;
     color: red;
+}
+.auth-form-help-links{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    margin-left: -40%;
+    font-weight: 400;
+    font-size: 13px;
 }

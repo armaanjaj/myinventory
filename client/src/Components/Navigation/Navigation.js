@@ -10,6 +10,7 @@ import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import { actionCreators } from "../../State/index";
+import Logo from "../Logo/Logo";
 
 function Navigation() {
     const mode = useSelector((state) => state.darkMode);
@@ -31,12 +32,7 @@ function Navigation() {
             >
                 <div className="navbar noMobile-navbar">
                     <Link to={"/"}>
-                        <span
-                            className="navbar-logo"
-                            style={{ color: `${mode.colorNavbar}` }}
-                        >
-                            Myinventory
-                        </span>
+                        <Logo style={{ color: `${mode.colorNavbar}` }} />
                     </Link>
                     <span
                         className="navbar-logo-mode-icon"
@@ -59,12 +55,7 @@ function Navigation() {
                 </div>
                 <div className="navbar mobile-navbar">
                     <Link to={"/"}>
-                        <span
-                            className="navbar-logo"
-                            style={{ color: `${mode.colorNavbar}` }}
-                        >
-                            Myinventory
-                        </span>
+                        <Logo style={{ color: `${mode.colorNavbar}` }} />
                     </Link>
                     <span
                         className="navbar-logo-mode-icon"
@@ -127,29 +118,36 @@ function Navigation() {
                             <div
                                 className="mobile-navbar-links-box"
                                 style={{
-                                    backgroundColor: `${
-                                        mode.bgNavbar.substring(0, 7)
-                                    }`,
+                                    backgroundColor: `${mode.bgNavbar.substring(
+                                        0,
+                                        7
+                                    )}`,
                                 }}
                             >
                                 <Link
                                     to={"/inventory"}
                                     style={{ color: `${mode.colorNavbar}` }}
-                                    onClick={()=>{setMobileMenu(!mobileMenu)}}
+                                    onClick={() => {
+                                        setMobileMenu(!mobileMenu);
+                                    }}
                                 >
                                     Inventory
                                 </Link>
                                 <Link
                                     to={"/account"}
                                     style={{ color: `${mode.colorNavbar}` }}
-                                    onClick={()=>{setMobileMenu(!mobileMenu)}}
+                                    onClick={() => {
+                                        setMobileMenu(!mobileMenu);
+                                    }}
                                 >
                                     Account
                                 </Link>
                                 <Link
                                     to={"/login"}
                                     style={{ color: `${mode.colorNavbar}` }}
-                                    onClick={()=>{setMobileMenu(!mobileMenu)}}
+                                    onClick={() => {
+                                        setMobileMenu(!mobileMenu);
+                                    }}
                                 >
                                     Login
                                 </Link>
@@ -159,7 +157,9 @@ function Navigation() {
                                         color: `${mode.colorNavbar}`,
                                         borderBottom: "none",
                                     }}
-                                    onClick={()=>{setMobileMenu(!mobileMenu)}}
+                                    onClick={() => {
+                                        setMobileMenu(!mobileMenu);
+                                    }}
                                 >
                                     Signup
                                 </Link>
