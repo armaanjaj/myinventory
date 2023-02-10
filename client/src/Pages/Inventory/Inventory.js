@@ -192,7 +192,7 @@ function Inventory() {
                                 }}
                             >
                                 <h2>Add Item</h2>
-                                <form className="inventory-body-item-container-form">
+                                <form className="inventory-body-item-container-form" onSubmit={(e)=>{e.preventDefault()}}>
                                     <div className="inventory-body-item-form-fieldDiv">
                                         <select
                                             className="field"
@@ -204,15 +204,15 @@ function Inventory() {
                                         >
                                             <option
                                                 disabled
-                                                selected
-                                                value={null}
+                                                // selected
+                                                defaultValue={null}
                                             >
                                                 -Select Category-
                                             </option>
                                             <option value={null}>Name</option>
                                         </select>
                                     </div>
-                                    <div className="fieldDiv">
+                                    <div className="fieldDiv  py-[0.5rem] px-0">
                                         <input
                                             type="text"
                                             className="field"
@@ -227,7 +227,7 @@ function Inventory() {
                                     <div className="warning">
                                         <p></p>
                                     </div>
-                                    <div className="fieldDiv">
+                                    <div className="fieldDiv  py-[0.5rem] px-0">
                                         <input
                                             type="text"
                                             className="field"
@@ -242,7 +242,7 @@ function Inventory() {
                                     <div className="warning">
                                         <p></p>
                                     </div>
-                                    <div className="fieldDiv">
+                                    <div className="fieldDiv  py-[0.5rem] px-0">
                                         <input
                                             type="submit"
                                             style={{ cursor: "pointer" }}

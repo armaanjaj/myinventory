@@ -4,6 +4,7 @@ import {
     Route,
 } from "react-router-dom";
 import Navigation from "./Components/Navigation/Navigation";
+import Home from "./Pages/Home/Home";
 
 import Inventory from "./Pages/Inventory/Inventory";
 import Login from "./Pages/Login/Login";
@@ -14,10 +15,10 @@ function App() {
         <>
             <Router>
                 <Routes>
-                    <Route path="*" element={<Login />} />
-                    <Route path="/" element={<Login />} />
+                    <Route path="/" element={<Home />} />
+                    <Route path="/auth/login" element={<Login />} />
                     <Route path="/inventory" element={<Inventory />} />
-                    <Route path="/signup" element={<Signup />} />
+                    <Route path="/auth/signup" element={<Signup />} />
                 </Routes>
             </Router>
         </>

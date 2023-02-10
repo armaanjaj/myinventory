@@ -1,48 +1,48 @@
 /* Footer */
 #foot{
     /* background-color: #0d1117; */
-    background-color: #041c1c;
-    padding: 2rem 0rem;
+    /* background-color: #041c1c; */
+    /* padding: 2rem 0rem; */
 }
 #logoName{
-    color: white;
+    /* color: white;
     font-size: 2rem;
-    margin-left: 2rem;
+    margin-left: 2rem; */
 }
 #linkContainer{
-    display: flex;
+    /* display: flex;
     flex-direction: row;
     justify-content: space-around;
     flex-wrap: wrap;
-    padding-top: 2rem;
+    padding-top: 2rem; */
 }
 .footLink{
-    display: flex;
-    flex-direction: column;
+    /* display: flex;
+    flex-direction: column; */
 }
 .sectionHead{
-    color: rgb(116, 116, 116);
-    text-decoration: underline;
+    /* color: #747474;
+    text-decoration: underline; */
 }
 .footLink a{
-    text-decoration: none;
-    color: rgb(192, 192, 192);
-    padding: 5px 0px;
+    /* text-decoration: none;
+    color: #c0c0c0;
+    padding: 5px 0px; */
 }
 .legalContent{
-    display: flex;
+    /* display: flex;
     flex-direction: row;
     justify-content: center;
-    color: rgb(116, 116, 116);
-    margin-left: 2rem;
+    color: #747474;
+    margin-left: 2rem; */
 }
 .legalContent a{
-    text-decoration: none;
-    color: rgb(192, 192, 192);
+    /* text-decoration: none;
+    color: #c0c0c0; */
 }
 
-@media screen and (max-width: 767px) {
-    #linkContainer{
+@media screen and (min-width: 767px) {
+    /* #linkContainer{
         flex-direction: column;
         padding: 2rem 2rem 0 2rem;
     }
@@ -54,5 +54,5 @@
     }
     .follow a{
         padding: 1rem;
-    }
+    } */
 }

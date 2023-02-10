@@ -3,7 +3,7 @@ import "./Logo.css";
 
 function Logo({style}) {
     return (
-        <span className="application-logo" style={style}>
+        <span className="text-xl font-logo" style={style}>
             Myinventory
         </span>
     );
