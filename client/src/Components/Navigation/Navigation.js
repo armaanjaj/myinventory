@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from "react";
-// import "./Navigation.css";
 import { Link } from "react-router-dom";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import LightModeIcon from "@mui/icons-material/LightMode";

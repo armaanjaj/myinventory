@@ -9,7 +9,7 @@ The project of purpose is to show case my skills for full stack application deve
 
 # Environment
 * Basic frameworks: React.js, Node.js
-* UI-tools: CSS3 (Vanilla CSS)
+* UI-tools: Tailwind css
 * HTTP request architecture: RestAPI
 * IDE : Visual Studio Code
 

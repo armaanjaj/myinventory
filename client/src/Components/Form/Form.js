@@ -1,6 +1,5 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import "./Form.css";
 
 function Form({ formHead, formFoot, formData, formButton, handlers }) {
     return (
