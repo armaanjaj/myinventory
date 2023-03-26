@@ -23,9 +23,15 @@ function Footer() {
                                 About
                             </div>
                             <span className="text-white py-1.5 px-0 text-[15px]">
-                                Lorem ipsum dolor sit, amet consectetur
-                                adipisicing elit. Ab eos dolor, quidem rerum
-                                expedita ratione architecto eligendi.
+                                Our platform offers a cutting-edge solution for
+                                businesses to effectively manage their inventory
+                                with ease. Our intuitive interface provides
+                                advanced features that allow you to effortlessly
+                                track stock levels, analyze sales trends, and
+                                make informed purchasing decisions. Our
+                                real-time updates and customizable reports give
+                                you the ability to stay ahead of the curve and
+                                streamline your operations.
                             </span>
                         </div>
                         <div className="flex flex-col justify-start items-start">
@@ -52,8 +58,8 @@ function Footer() {
                     </div>
                     <div className="flex flex-col items-start mobile:py-4 tablet:py-0 laptop:py-0 desktop:py-0 max-w-[33%]">
                         <div className="text-white font-bold">Navigations</div>
-                        <div className="flex flex-row justify-center items-center">
-                            <div className="flex flex-col justify-center items-start w-[calc((10vw+100%))] m-px-[30%]">
+                        <div className="flex  mobile:flex-col tablet:flex-row desktop:flex-row laptop:flex-row justify-center items-center">
+                            <div className="flex  mobile:flex-row tablet:flex-col desktop:flex-col laptop:flex-col mobile:justify-evenly tablet:justify-center desktop:justify-center laptop:justify-center items-start w-[calc((10vw+100%))] m-px-[33%]">
                                 <Link
                                     to={"/"}
                                     className="no-underline text-white py-1.5 px-0"
@@ -85,7 +91,7 @@ function Footer() {
                                     About Us
                                 </Link>
                             </div>
-                            <div className="flex flex-col justify-center items-start w-[calc((10vw+100%))] m-px-[30%]">
+                            <div className="flex mobile:flex-row tablet:flex-col desktop:flex-col laptop:flex-col mobile:justify-evenly tablet:justify-center desktop:justify-center laptop:justify-center items-start w-[calc((10vw+100%))] m-px-[33%]">
                                 <Link
                                     to={"/"}
                                     className="no-underline text-white py-1.5 px-0"
@@ -117,36 +123,18 @@ function Footer() {
                                     Privacy
                                 </Link>
                             </div>
-                            <div className="flex flex-col justify-center items-start w-[calc((10vw+100%))] m-px-[30%]">
+                            <div className="flex mobile:flex-row tablet:flex-col desktop:flex-col laptop:flex-col mobile:justify-evenly tablet:justify-center desktop:justify-center laptop:justify-center items-start w-[calc((10vw+100%))] m-px-[33%]">
                                 <Link
                                     to={"/"}
                                     className="no-underline text-white py-1.5 px-0"
                                 >
                                     FAQ
                                 </Link>
-                                <Link
-                                    to={"/"}
-                                    className="no-underline text-white py-1.5 px-0"
-                                >
-                                    Careers
-                                </Link>
-                                <Link
-                                    to={"/"}
-                                    className="no-underline text-white py-1.5 px-0"
-                                >
-                                    Process
-                                </Link>
-                                <Link
-                                    to={"/"}
-                                    className="no-underline text-white py-1.5 px-0"
-                                >
-                                    About Us
-                                </Link>
                                 <a
                                     href="https://github.com/armaanjaj/myinventory"
                                     className="no-underline text-white py-1.5 px-0"
                                 >
-                                    Contribute to project
+                                    Contribute
                                 </a>
                             </div>
                         </div>

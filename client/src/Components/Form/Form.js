@@ -44,7 +44,7 @@ function Form({ formHead, formFoot, formData, formButton, handlers }) {
                                     </Link>
                                 </div>
                                 <div className="fieldDiv py-[0.5rem] px-0">
-                                    <Link to={"/signup"} className="links no-underline text-black border-0">
+                                    <Link to={"/auth/signup"} className="links no-underline text-black border-0">
                                     Don't have an account? <span className="text-[#2d8cb8]">Sign up</span>
                                     </Link>
                                 </div>
@@ -52,7 +52,7 @@ function Form({ formHead, formFoot, formData, formButton, handlers }) {
                         ):(
                             <>
                                 <div className="fieldDiv py-[0.5rem] px-0">
-                                    <Link to={"/login"} className="links no-underline text-black border-0">
+                                    <Link to={"/auth/login"} className="links no-underline text-black border-0">
                                     Already have an account? <span>Log in</span>
                                     </Link>
                                 </div>

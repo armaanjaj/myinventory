@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Form from "../../Components/Form/Form";
 import Logo from "../../Components/Logo/Logo";
-import "./Signup.css"
+import "./Signup.css";
 
 const SIGNUP_URL = "/store/signup";
 
@@ -68,61 +68,58 @@ function Signup() {
     };
 
     return (
-        <div className="signup-body-main">
-            <div className="signup-body-content">
-                <div className="signup-body-content-left"></div>
-                <div className="signup-body-content-center">
+        <div className="flex flex-row justify-center items-center h-[100vh] w-[100vw]">
+            {/* <div className="h-[100vh] w-[33.3vw]"></div> */}
+            <div className="h-[100vh] bg-white">
                 <Form
-                formHead={<Logo/>}
-                // formHead={"Sign up for free"}
-                formFoot={{
-                    name: "Already have an account",
-                    link: "/login",
-                }}
-                formData={{
-                    inputs: [
-                        {
-                            key: "fName",
-                            type: "text",
-                            name: "fName",
-                            placeholder: "Enter your first name",
-                            handler: (e) => setFirstName(e.target.value),
-                            error: firstNameError,
-                        },
-                        {
-                            key: "lName",
-                            type: "text",
-                            name: "lName",
-                            placeholder: "Enter your last name",
-                            handler: (e) => setLastName(e.target.value),
-                            error: lastNameError,
-                        },
-                        {
-                            key: "email",
-                            type: "email",
-                            name: "email",
-                            placeholder: "Enter your email address",
-                            handler: (e) => setEmail(e.target.value),
-                            error: emailError,
-                        },
-                        {
-                            key: "password",
-                            type: "password",
-                            name: "password",
-                            placeholder: "Enter your password",
-                            handler: (e) => setPassword(e.target.value),
-                            error: passwordError,
-                        },
-                    ],
-                }}
-                formButton={"Sign up for free"}
-                handlers={{
-                    formHandler: handleSignup,
-                }}
-            />
-                </div>
-                <div className="signup-body-content-right"></div>
+                    formHead={<Logo />}
+                    formFoot={{
+                        name: "Already have an account",
+                        link: "/auth/login",
+                    }}
+                    formData={{
+                        inputs: [
+                            {
+                                key: "fName",
+                                type: "text",
+                                name: "fName",
+                                placeholder: "Enter your first name",
+                                handler: (e) => setFirstName(e.target.value),
+                                error: firstNameError,
+                            },
+                            {
+                                key: "lName",
+                                type: "text",
+                                name: "lName",
+                                placeholder: "Enter your last name",
+                                handler: (e) => setLastName(e.target.value),
+                                error: lastNameError,
+                            },
+                            {
+                                key: "email",
+                                type: "email",
+                                name: "email",
+                                placeholder: "Enter your email address",
+                                handler: (e) => setEmail(e.target.value),
+                                error: emailError,
+                            },
+                            {
+                                key: "password",
+                                type: "password",
+                                name: "password",
+                                placeholder: "Enter your password",
+                                handler: (e) => setPassword(e.target.value),
+                                error: passwordError,
+                            },
+                        ],
+                    }}
+                    formButton={"Sign up for free"}
+                    handlers={{
+                        formHandler: handleSignup,
+                    }}
+                />
             </div>
+            {/* <div className="h[100vh] w-[33.3vw]"></div> */}
         </div>
     );
 }

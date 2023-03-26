@@ -114,7 +114,7 @@ function Navigation() {
                                     style={{ color: `${mode.colorNavbar}` }}
                                     className="no-underline text-black py-0 px-[1.55rem] text-[1rem] cursor-pointer"
                                 >
-                                    Signup
+                                    <span className="rounded-[1rem] bg-[#027f8f] px-[1rem] py-[0.25rem] text-white">Signup</span>
                                 </Link>
                             </>
                         ) : (

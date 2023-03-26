@@ -51,10 +51,10 @@ function Login() {
     };
 
     return (
-        <div className="login-body-main">
-            <div className="login-body-content">
-                <div className="login-body-content-left"></div>
-                <div className="login-body-content-right">
+        <div className="w-[100vw] h-[100vh]">
+            <div className="flex flex-row justify-center items-center flex-wrap">
+                <div className="login-body-content-left bg-no-repeat bg-cover w-[50vw] h-[100vh] mobile:hidden tablet:hidden laptop:block desktop:block"></div>
+                <div className="w-[50vw] h-[100vh]">
                     <Form
                         formHead={<Logo />}
                         formFoot={{
