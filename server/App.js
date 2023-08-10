@@ -1,34 +1,21 @@
 // module imports
 const express = require("express");
 const app = express();
-const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
-// const passport = require("passport");
-const session = require("express-session");
 const port = process.env.port || 4000;
 
-let sess = {
-    secret: "index",
-    saveUninitialized: true,
-    resave: true,
-    cookie: {secure: false, maxAge: 1000 * 60 * 60 * 24},
-};
-app.use(session(sess));
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
 // ROUTE FILES
 const loginRoute = require("./src/routes/Login");
 const signupRoute = require("./src/routes/Signup");
-const inventoryRoute = require("./src/routes/Inventory");
-const accountRoute = require("./src/routes/Account");
+const authRoute = require("./src/routes/Auth");
 
-
-// ROUTE SETUP
-app.use("/store/login", loginRoute);
-app.use("/store/signup", signupRoute);
-app.use("/store/inventory", inventoryRoute);
-app.use("/store/account", accountRoute);
+// ROUTE SETUP | ALL ROUTES WHICH DO NOT REQUIRE AUTORIZATION TO ACCESS
+app.use("/api/auth", authRoute);
+app.use("/api/login", loginRoute);
+app.use("/api/signup", signupRoute);
 
 // admin route
 app.get("/admin", (req, res)=>{
@@ -341,7 +328,7 @@ app.get("/new-account", (req, res)=>{
 
 // handling status errors
 app.use((req, res)=>{
-    res.status(404).sendFile(__dirname+"/views/html-files/pageNotFound.html");
+    res.status(404).json({message:"Invalid route"});
 })
 
 // app port listener

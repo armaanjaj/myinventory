@@ -1,17 +1,13 @@
 var mysql = require("mysql");
+require("dotenv").config();
 
 var pool = mysql.createPool({
-    connectionLimit:100,
-    host: "localhost",
-    port: 3307,
-    user: "root",
-    password: "password",
-    database: "inventorydb"
-    // host: process.env.db_host,
-    // port: process.env.db_port,
-    // user: process.env.db_user,
-    // password: process.env.db_password,
-    // database: process.env.db_database
+    connectionLimit:1000,
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_DATABASE
 });
 
 module.exports = pool;

@@ -4,7 +4,7 @@ const query = require("../modules/sqlQuery");
 
 router
     .get("/", (req, res) => {
-        if (req.body.email === "" || req.body.email === undefined) {
+        if (req.query.email === "" || req.query.email === undefined) {
             return res.status(500).send({
                 success: false,
                 message: "Not enough data to process the request",
@@ -13,7 +13,7 @@ router
 
         query(
             "SELECT * FROM item i join category c on c.category_id = i.category WHERE owner = ?",
-            [req.body.email],
+            [req.query.email],
             (error, result) => {
                 if (error !== null) {
                     return res.status(error.status).send(error.message);
@@ -32,7 +32,7 @@ router
     })
 
     .get("/:itemId", (req, res) => {
-        if (req.body.email === "" || req.body.email === undefined) {
+        if (req.query.email === "" || req.query.email === undefined) {
             return res.status(500).send({
                 success: false,
                 message: "Not enough data to process the request",
@@ -41,7 +41,7 @@ router
 
         query(
             "SELECT * FROM item i join category c on c.category_id = i.category WHERE owner = ? AND item_id = ?",
-            [req.body.email, req.params.itemId],
+            [req.query.email, req.params.itemId],
             (error, result) => {
                 if (error !== null) {
                     return res.status(error.status).send(error.message);
