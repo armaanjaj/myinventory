@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Footer from "../../Components/Footer/Footer";
 import CancelIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -17,6 +17,7 @@ import {
     DialogContent,
     DialogContentText,
 } from "@mui/material";
+import useAuth from "../../Hooks/useAuth";
 
 function Inventory() {
     const mode = useSelector((state) => state.darkMode);
@@ -25,7 +26,14 @@ function Inventory() {
     const [dialogItemCategory, setDialogItemCategory] = useState("");
     const [dialogItemName, setDialogItemName] = useState("");
     const [dialogItemPrice, setDialogItemPrice] = useState("");
-
+    
+    // CHECK IF THE USER IS LOGGED IN, OTHERWISE REDIRECT TO LOGIN PAGE
+    useAuth("INVENTORY")
+    
+    const handleCloseDialog = () => {
+        setOpenDialog(false);
+    };
+    
     const inventoryArray = [
         {
             category: "Kitchen",
@@ -104,9 +112,6 @@ function Inventory() {
         },
     ];
 
-    const handleCloseDialog = () => {
-        setOpenDialog(false);
-    };
 
     return (
         <>

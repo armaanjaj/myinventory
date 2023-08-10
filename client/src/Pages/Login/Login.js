@@ -4,11 +4,17 @@ import axios from "axios";
 import Form from "../../Components/Form/Form";
 import "./Login.css";
 import Logo from "../../Components/Logo/Logo";
+import { useDispatch } from "react-redux";
+import { bindActionCreators } from "redux";
+import { actionCreators } from "../../State";
+import useAuth from "../../Hooks/useAuth";
 
-const LOGIN_URL = "/store/login";
+const LOGIN_URL = "/api/login";
 
 function Login() {
     let navigate = useNavigate();
+    const dispatch = useDispatch();
+    const { loginSuccess } = bindActionCreators(actionCreators, dispatch);
 
     // STATES
     const [email, setEmail] = useState("");
@@ -17,6 +23,9 @@ function Login() {
     const [passwordError, setPasswordError] = useState("");
 
     const [inputError, setInputError] = useState(false);
+
+    // HANDLE AUTHENTICATION & NAVIGATION
+    useAuth("AUTH")
 
     // HANDLERS
     const handleLogin = (e) => {
@@ -41,13 +50,26 @@ function Login() {
                 })
                 .then((response) => {
                     if (response.data.success) {
-                        console.log(response);
+                        localStorage.setItem("authToken", response.data.token);
+                        clearFields();
+
+                        loginSuccess(response.data);
+
+                        // Navigate to the desired page
+                        navigate("/inventory", { replace: true });
                     }
                 })
                 .catch((error) => {
                     console.log(error);
                 });
         }
+    };
+
+    const clearFields = () => {
+        setEmail("");
+        setEmailError("");
+        setPassword("");
+        setPasswordError("");
     };
 
     return (

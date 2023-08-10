@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import NightlightRoundIcon from "@mui/icons-material/NightlightRound";
@@ -10,10 +10,9 @@ import { useDispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import { actionCreators } from "../../State/index";
 import Logo from "../Logo/Logo";
-import Cookies from "universal-cookie";
 
 function Navigation() {
-    const cookie = new Cookies();
+    let navigate = useNavigate();
 
     const mode = useSelector((state) => state.darkMode);
     const dispatch = useDispatch();
@@ -23,16 +22,16 @@ function Navigation() {
         setModeOn(!on);
         darkMode(!on);
     };
-
+    
     const [mobileMenu, setMobileMenu] = useState(false);
     const [accountMenu, setAccountMenu] = useState(false);
     const accountMenuRef = useRef(null);
-
+    
     const handleClickOutside = (event) => {
         if (
             accountMenuRef.current &&
             !accountMenuRef.current.contains(event.target)
-        ) {
+            ) {
             setAccountMenu(false);
         }
     };
@@ -43,8 +42,22 @@ function Navigation() {
             document.removeEventListener("click", handleClickOutside, true);
         };
     });
+    
+    // USE REDUX TO GET THE LOGIN STATE
+    const isLoginIn = useSelector((state) => state.auth.isAuthenticated);
 
-    const [isLoginIn, setIsLogIn] = useState(false);
+    // LOGGING OUT
+    const { logout } = bindActionCreators(actionCreators, dispatch);
+
+    const handleLogout = () => {
+        localStorage.removeItem("authToken");
+        logout();
+
+        setTimeout(() => {
+            navigate("/");
+        }, 800);
+    };
+    
 
     return (
         <>
@@ -114,7 +127,9 @@ function Navigation() {
                                     style={{ color: `${mode.colorNavbar}` }}
                                     className="no-underline text-black py-0 px-[1.55rem] text-[1rem] cursor-pointer"
                                 >
-                                    <span className="rounded-[1rem] bg-[#027f8f] px-[1rem] py-[0.25rem] text-white">Signup</span>
+                                    <span className="rounded-[1rem] bg-[#027f8f] px-[1rem] py-[0.25rem] text-white">
+                                        Signup
+                                    </span>
                                 </Link>
                             </>
                         ) : (
@@ -164,16 +179,16 @@ function Navigation() {
                                         >
                                             <span>My account</span>
                                         </Link>
-                                        <Link
-                                            to={"/logout"}
+                                        <div
                                             style={{
                                                 color: `${mode.colorNavbar}`,
                                                 borderBottom: "none",
                                             }}
                                             className="no-underline text-black p-2 text-[1rem] cursor-pointer border-b-[1px] border-black border-solid w-[90%] rounded-[2px]"
+                                            onClick={handleLogout}
                                         >
                                             Logout
-                                        </Link>
+                                        </div>
                                     </div>
                                 )}
                             </span>
