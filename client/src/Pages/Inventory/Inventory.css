@@ -7,80 +7,8 @@
     min-height: 100vh;
     overflow-x: hidden;
 }
-.inventory-body-content {
-    padding: 15vh 8vw 15vh 8vw;
-}
-.inventory-body-list {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-evenly;
-    flex-wrap: wrap;
-}
-.inventory-body-list-left {
-    min-height: calc((55vh + 2rem));
-    width: 50vw;
-    margin: 2rem;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgb(0 0 0 / 10%), 0 8px 16px rgb(0 0 0 / 10%);
-    backdrop-filter: blur(10px);
-    background-color: #ffffffd6;
-    padding: 0 0 2rem 0;
-}
-.inventory-table-head {
-    margin: 2rem; /*top right bottom left i.e. clock wise*/
-    font-size: 20px;
-    font-weight: bold;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-}
-table.table {
-    margin: 2rem;
-    border-collapse: collapse;
-    height: 40vh;
-    overflow-y: scroll;
-    display: block;
-}
-table.table tbody tr td, table.table tbody tr th{
+table.tableCSS tbody tr td, table.tableCSS tbody tr th{
     width: 10rem;
-}
-.inventory-body-list-action.btn-edit{
-    cursor: pointer;
-    background: transparent;
-    padding: 0;
-    border: none;
-    color: orange;
-    margin: 0 1rem 0 1rem;
-}
-.inventory-body-list-action.btn-delete{
-    cursor: pointer;
-    background: transparent;
-    padding: 0;
-    border: none;
-    color: red;
-    margin: 0 1rem 0 1rem;
-}
-.inventory-body-forms{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 18px 18px;
-    background-color: #ffffffd6;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgb(0 0 0 / 10%), 0 8px 16px rgb(0 0 0 / 10%);
-    backdrop-filter: blur(10px);
-}
-.inventory-body-item-container-form{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-.inventory-body-item-form-fieldDiv{
-    padding: 10px 10px; 
 }
 .field{
     padding-top: 10px;
@@ -102,20 +30,6 @@ table.table tbody tr td, table.table tbody tr th{
     justify-content: center;
     align-items: center;
 }
-.inventory-body-searchbox{
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-}
-.search-item{
-    padding: 0.2rem;
-    width: 10rem;
-    text-align: left;
-    border-radius: 6px;
-    outline: none;
-    border: 1px solid #dddfe2;
-}
 
 @media screen and (max-width: 767px) {
     .inventory-body-content {
@@ -130,7 +44,7 @@ table.table tbody tr td, table.table tbody tr th{
         margin: 0 2rem 0 2rem;
         padding: 2rem 3rem 2rem 3rem;
     }
-    table.table {
+    table.tableCSS {
         margin: 1rem;
     }
     .field{
