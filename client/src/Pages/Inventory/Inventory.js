@@ -23,6 +23,7 @@ import {
 import useAuth from "../../Hooks/useAuth";
 import jwtDecode from "jwt-decode";
 import axios from "axios";
+import Loader from "../../Components/Loaders/Loader-FS";
 
 const INVENTORY_URL = "/api/auth/inventory";
 const CATEGORY_URL = "/api/categories";
@@ -38,6 +39,7 @@ function Inventory() {
     const [inventoryArray, setInventoryArray] = useState([]);
     const [categoryArray, setCategoryArray] = useState([]);
     const [ownerEmail, setOwnerEmail] = useState("");
+    const [loading, setLoading] = useState(false);
 
     // options dialog box
     const [openOptionsDialog, setOpenOptionsDialog] = useState(false);
@@ -57,6 +59,11 @@ function Inventory() {
     const [dialogEditFieldCategory, setDialogEditFieldCategory] = useState("");
     const [dialogEditFieldItemName, setDialogEditFieldItemName] = useState("");
     const [dialogEditFieldItemPrice, setDialogEditFieldItemPrice] = useState("");
+
+    // success dialog box
+    const [openSuccessDialog, setOpenSuccessDialog] = useState(false)
+    const [successDialogTitle, setSuccessDialogTitle] = useState("")
+    const [successDialogContent, setSuccessDialogContent] = useState("")
 
     // options dialog handler
     const handleCloseOptionsDialog = () => {
@@ -87,8 +94,6 @@ function Inventory() {
         setDialogEditFieldCategory("");
         setDialogEditFieldItemName("");
         setDialogEditFieldItemPrice("");
-        setOpenEditItemDialog(false);
-        setOpenOptionsDialog(false)
     };
 
     let jwtData = null;
@@ -103,6 +108,9 @@ function Inventory() {
 
     // DATA FETCHERS & HANDLERS
     const getAllItems = (email) => {
+
+        setLoading(true)
+
         axios
             .get(INVENTORY_URL, {
                 params: {
@@ -116,6 +124,7 @@ function Inventory() {
             .then((response) => {
                 if (response.data) {
                     setInventoryArray(response.data);
+                    setLoading(false)
                 }
             })
             .catch((error) => {
@@ -139,6 +148,9 @@ function Inventory() {
     const handleAddNewItemSubmit = (e) => {
         e.preventDefault();
 
+        setOpenAddItemDialog(false);
+        setLoading(true)
+
         let inventoryBody = {
             category: dialogFieldCategory,
             itemName: dialogFieldItemName,
@@ -158,6 +170,10 @@ function Inventory() {
                     // console.log(response.data);
                     handleCloseAddItemDialog();
                     getAllItems(ownerEmail);
+                    setSuccessDialogTitle("Success")
+                    setSuccessDialogContent(response.data.message)
+                    setLoading(false)
+                    setOpenSuccessDialog(true)
                 }
             })
             .catch((error) => {
@@ -166,6 +182,10 @@ function Inventory() {
     };
 
     const handlePressEdit = (itemId) => {
+
+        setOpenOptionsDialog(false);
+        setLoading(true)
+        
         axios
             .get(INVENTORY_URL + `/${itemId}`, {
                 params: {
@@ -178,6 +198,7 @@ function Inventory() {
             })
             .then((response) => {
                 if (response.data) {
+                    setLoading(false)
                     handleHydrateEditDialog(response.data[0]);
                 }
             })
@@ -188,6 +209,9 @@ function Inventory() {
 
     const handleEditItemSubmit = (e) => {
         e.preventDefault();
+
+        setOpenEditItemDialog(false);
+        setLoading(true)
 
         let inventoryBody = {
             category: dialogEditFieldCategory,
@@ -205,9 +229,38 @@ function Inventory() {
             })
             .then((response) => {
                 if (response.data) {
-                    // console.log(response.data);
                     handleCloseEditItemDialog();
                     getAllItems(ownerEmail);
+                    setSuccessDialogTitle("Success")
+                    setSuccessDialogContent(response.data.message)
+                    setLoading(false)
+                    setOpenSuccessDialog(true)
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    };
+
+    const handlePressDelete = () => {
+
+        setOpenOptionsDialog(false);
+        setLoading(true)
+        
+        axios
+            .delete(INVENTORY_URL + `/${dialogItemId}`, {
+                headers: {
+                    "x-auth-token": token,
+                    "Content-Type": "application/json",
+                },
+            })
+            .then((response) => {
+                if (response.data) {
+                    getAllItems(ownerEmail);
+                    setSuccessDialogTitle("Success")
+                    setSuccessDialogContent(response.data.message)
+                    setLoading(false)
+                    setOpenSuccessDialog(true)
                 }
             })
             .catch((error) => {
@@ -217,6 +270,7 @@ function Inventory() {
 
     return (
         <>
+            {loading && <Loader/>}
             <Navigation />
             <div className="inventory-body-main">
                 <div className="my-[15vh] smallMobile:mx-5 mobile:mx-5 tablet:mx-0 laptop:mx-0 desktop:mx-0">
@@ -383,7 +437,7 @@ function Inventory() {
                         <span>Edit</span>
                     </MuiButton>
                     <MuiButton
-                        onClick={handleCloseOptionsDialog}
+                        onClick={() => handlePressDelete(dialogItemId)}
                         color="inherit"
                     >
                         <div className="flex flex-row justify-start items-center gap-4 text-red-600">
@@ -491,6 +545,7 @@ function Inventory() {
                     <TextField
                         margin="dense"
                         label="Item Price"
+                        type="number"
                         fullWidth
                         required
                         value={dialogEditFieldItemPrice}
@@ -509,6 +564,23 @@ function Inventory() {
                     </MuiButton>
                     <MuiButton onClick={handleEditItemSubmit} color="primary">
                         Submit
+                    </MuiButton>
+                </DialogActions>
+            </Dialog>
+
+            {/* Confirmation SUCCESS dialog */}
+            <Dialog open={openSuccessDialog} onClose={()=>setOpenSuccessDialog(false)}>
+                <DialogTitle>{successDialogTitle}</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>{successDialogContent}</DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <MuiButton
+                        onClick={()=>setOpenSuccessDialog(false)}
+                        color="primary"
+                        autoFocus
+                    >
+                        OK
                     </MuiButton>
                 </DialogActions>
             </Dialog>

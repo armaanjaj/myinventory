@@ -91,7 +91,7 @@ router
                     if (result.insertId && result.affectedRows > 0) {
                         return res.status(200).send({
                             success: true,
-                            message: "Request processed successfully",
+                            message: "Item added successfully",
                             result,
                         });
                     }
@@ -120,7 +120,7 @@ router
                     if (result.affectedRows > 0) {
                         return res.status(200).send({
                             success: true,
-                            message: "Request processed successfully",
+                            message: "Item removed successfully",
                             result,
                         });
                     } else {
@@ -170,7 +170,7 @@ router
                     if (result.affectedRows > 0) {
                         return res.status(200).send({
                             success: true,
-                            message: "Request processed successfully",
+                            message: "Item edited successfully",
                             result,
                         });
                     }
