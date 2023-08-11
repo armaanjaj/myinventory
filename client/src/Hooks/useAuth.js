@@ -10,18 +10,26 @@ const useAuth = (page) => {
     const isLogIn = useSelector((state) => state.auth.isAuthenticated);
 
     useEffect(() => {
-        switch(page){
-            case "INVENTORY": {
-                if (!isLogIn){
-                    navigate("/auth/login", { replace: true });
+        const checkAuthAndNavigate = () => {
+            switch (page) {
+                case "INVENTORY": {
+                    if (!isLogIn) {
+                        navigate("/auth/login", { replace: true });
+                    }
+                    break;
+                }
+                case "AUTH": {
+                    if (isLogIn) {
+                        navigate("/inventory", { replace: true });
+                    }
+                    break;
                 }
             }
-            case "AUTH": {
-                if (isLogIn){
-                    navigate("/inventory", { replace: true });
-                }
-            }
-        }
+        };
+
+        checkAuthAndNavigate();
+
+        return;
     }, [isLogIn]);
 };
 

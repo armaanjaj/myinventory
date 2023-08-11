@@ -16,102 +16,149 @@ import {
     DialogActions,
     DialogContent,
     DialogContentText,
+    MenuItem,
+    TextField,
+    DialogTitle,
 } from "@mui/material";
 import useAuth from "../../Hooks/useAuth";
+import jwtDecode from "jwt-decode";
+import axios from "axios";
+
+const INVENTORY_URL = "/api/auth/inventory";
+const CATEGORY_URL = "/api/categories";
 
 function Inventory() {
+    // CHECK IF THE USER IS LOGGED IN, OTHERWISE REDIRECT TO LOGIN PAGE
+    useAuth("INVENTORY");
+
     const mode = useSelector((state) => state.darkMode);
+    const token = useSelector((state) => state.auth.user?.token);
+
     const [searchBox, setSearchBox] = useState(false);
-    const [openDialog, setOpenDialog] = useState(false);
+    const [inventoryArray, setInventoryArray] = useState([]);
+    const [categoryArray, setCategoryArray] = useState([]);
+    const [ownerEmail, setOwnerEmail] = useState("");
+
+    // options dialog box
+    const [openOptionsDialog, setOpenOptionsDialog] = useState(false);
     const [dialogItemCategory, setDialogItemCategory] = useState("");
     const [dialogItemName, setDialogItemName] = useState("");
     const [dialogItemPrice, setDialogItemPrice] = useState("");
-    
-    // CHECK IF THE USER IS LOGGED IN, OTHERWISE REDIRECT TO LOGIN PAGE
-    useAuth("INVENTORY")
-    
-    const handleCloseDialog = () => {
-        setOpenDialog(false);
-    };
-    
-    const inventoryArray = [
-        {
-            category: "Kitchen",
-            item: "Fan",
-            price: 15.99,
-        },
-        {
-            category: "Bedroom",
-            item: "Clock",
-            price: 30.0,
-        },
-        {
-            category: "Garage",
-            item: "Stand",
-            price: 9.99,
-        },
-        {
-            category: "Living room",
-            item: "TV",
-            price: 1099.99,
-        },
-        {
-            category: "Office",
-            item: "Table",
-            price: 50.0,
-        },
-        {
-            category: "Kitchen",
-            item: "Fan",
-            price: 15.99,
-        },
-        {
-            category: "Bedroom",
-            item: "Clock",
-            price: 30.0,
-        },
-        {
-            category: "Garage",
-            item: "Stand",
-            price: 9.99,
-        },
-        {
-            category: "Living room",
-            item: "TV",
-            price: 1099.99,
-        },
-        {
-            category: "Office",
-            item: "Table",
-            price: 50.0,
-        },
-        {
-            category: "Kitchen",
-            item: "Fan",
-            price: 15.99,
-        },
-        {
-            category: "Bedroom",
-            item: "Clock",
-            price: 30.0,
-        },
-        {
-            category: "Garage",
-            item: "Stand",
-            price: 9.99,
-        },
-        {
-            category: "Living room",
-            item: "TV",
-            price: 1099.99,
-        },
-        {
-            category: "Office",
-            item: "Table",
-            price: 50.0,
-        },
-    ];
 
+    // add item dialog box
+    const [openAddItemDialog, setOpenAddItemDialog] = useState(false);
+    const [dialogFieldCategory, setDialogFieldCategory] = useState("");
+    const [dialogFieldItemName, setDialogFieldItemName] = useState("");
+    const [dialogFieldItemPrice, setDialogFieldItemPrice] = useState("");
+
+    // edit item dialog box
+    const [opeEditItemDialog, setOpeEditItemDialog] = useState(false);
+    const [dialogEditFieldCategory, setDialogEditFieldCategory] = useState("");
+    const [dialogEditFieldItemName, setDialogEditFieldItemName] = useState("");
+    const [dialogEditFieldItemPrice, setDialogEditFieldItemPrice] = useState("");
+
+    // options dialog handler
+    const handleCloseOptionsDialog = () => {
+        setOpenOptionsDialog(false);
+    };
+
+    // add item dialog handler
+    const handleOpenAddItemDialog = () => {
+        getAllCategories();
+        setOpenAddItemDialog(true);
+    };
+    const handleCloseAddItemDialog = () => {
+        setDialogFieldCategory("");
+        setDialogFieldItemName("");
+        setDialogFieldItemPrice("");
+        setOpenAddItemDialog(false);
+    };
+
+    // edit item dialog handler
+    const handleOpenEditItemDialog = () => {
+        setOpeEditItemDialog(true);
+    };
+    const handleCloseEditItemDialog = () => {
+        setDialogEditFieldCategory("");
+        setDialogEditFieldItemName("");
+        setDialogEditFieldItemPrice("");
+        setOpenAddItemDialog(false);
+    };
+
+    let jwtData = null;
+
+    useEffect(() => {
+        if (token !== undefined) {
+            jwtData = jwtDecode(token);
+            setOwnerEmail(jwtData.email)
+            getAllItems(jwtData.email);
+        }
+    }, [token, jwtData]);
+
+    // DATA FETCHERS & HANDLERS
+    const getAllItems = (email) => {
+        axios
+            .get(INVENTORY_URL, {
+                params: {
+                    email: email,
+                },
+                headers: {
+                    "x-auth-token": token,
+                    "Content-Type": "application/json",
+                },
+            })
+            .then((response) => {
+                if (response.data) {
+                    setInventoryArray(response.data);
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    };
+
+    const getAllCategories = () => {
+        axios
+            .get(CATEGORY_URL)
+            .then((response) => {
+                if (response.data) {
+                    setCategoryArray(response.data.data);
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    };
+
+    const handleAddNewItemSubmit = (e) => {
+
+        e.preventDefault();
+
+        let inventoryBody = {
+            category: dialogFieldCategory,
+            itemName: dialogFieldItemName,
+            price: dialogFieldItemPrice,
+            email: ownerEmail,
+        }
+
+        axios
+            .post(INVENTORY_URL, inventoryBody, {
+                headers: {
+                    "x-auth-token": token,
+                    "Content-Type": "application/json",
+                },
+            })
+            .then((response) => {
+                if (response.data) {
+                    console.log(response.data)
+                    handleCloseAddItemDialog()
+                    getAllItems(ownerEmail)
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    };
 
     return (
         <>
@@ -187,22 +234,24 @@ function Inventory() {
                                             key={i}
                                             className="hover:bg-[#b6c4c7fb] transition-all duration-300 rounded-sm"
                                         >
-                                            <td>{item.category}</td>
-                                            <td>{item.item}</td>
+                                            <td>{item.category_name}</td>
+                                            <td>{item.item_name}</td>
                                             <td>{item.price}</td>
                                             <td>
                                                 <div
                                                     onClick={() => {
                                                         setDialogItemCategory(
-                                                            item.category
+                                                            item.category_name
                                                         );
                                                         setDialogItemName(
-                                                            item.item
+                                                            item.item_name
                                                         );
                                                         setDialogItemPrice(
                                                             item.price
                                                         );
-                                                        setOpenDialog(true);
+                                                        setOpenOptionsDialog(
+                                                            true
+                                                        );
                                                     }}
                                                     className="w-fit cursor-pointer"
                                                 >
@@ -226,7 +275,10 @@ function Inventory() {
                                     Control panel
                                 </div>
                                 <div className="flex flex-col justify-start items-start gap-2 w-full">
-                                    <div className="flex flex-row justify-start items-center gap-4 border-gray-400 border-2 p-2 rounded-md w-full cursor-pointer">
+                                    <div
+                                        onClick={handleOpenAddItemDialog}
+                                        className="flex flex-row justify-start items-center gap-4 border-gray-400 border-2 p-2 rounded-md w-full cursor-pointer"
+                                    >
                                         <AddIcon />
                                         <span>Add new item</span>
                                     </div>
@@ -241,8 +293,8 @@ function Inventory() {
                 </div>
             </div>
 
-            {/* Dialog Box */}
-            <Dialog open={openDialog} onClose={handleCloseDialog}>
+            {/* Options dialog box */}
+            <Dialog open={openOptionsDialog} onClose={handleCloseOptionsDialog}>
                 <DialogContent>
                     <DialogContentText>
                         <span className="flex flex-row justify-start items-center gap-4">
@@ -265,18 +317,77 @@ function Inventory() {
                 </DialogContent>
                 <DialogActions>
                     <MuiButton
-                        onClick={handleCloseDialog}
+                        onClick={handleCloseOptionsDialog}
                         color="inherit"
                         className="flex flex-row justify-start items-center gap-4"
                     >
                         <EditIcon />
                         <span>Edit</span>
                     </MuiButton>
-                    <MuiButton onClick={handleCloseDialog} color="inherit">
+                    <MuiButton
+                        onClick={handleCloseOptionsDialog}
+                        color="inherit"
+                    >
                         <div className="flex flex-row justify-start items-center gap-4 text-red-600">
                             <CancelIcon />
                             <span>Delete</span>
                         </div>
+                    </MuiButton>
+                </DialogActions>
+            </Dialog>
+
+            {/* Add item dialog box */}
+            <Dialog open={openAddItemDialog} onClose={handleCloseAddItemDialog}>
+                <DialogTitle>Add Item</DialogTitle>
+                <DialogContent>
+                    <TextField
+                        margin="dense"
+                        select
+                        label="Categories"
+                        fullWidth
+                        required
+                        value={dialogFieldCategory}
+                        onChange={(e) => setDialogFieldCategory(e.target.value)}
+                    >
+                        {categoryArray.map((category) => (
+                            <MenuItem
+                                key={category.category_id}
+                                value={category.category_id}
+                            >
+                                {category.category_name}
+                            </MenuItem>
+                        ))}
+                    </TextField>
+
+                    <TextField
+                        margin="dense"
+                        label="Item Name"
+                        fullWidth
+                        required
+                        value={dialogFieldItemName}
+                        onChange={(e) => setDialogFieldItemName(e.target.value)}
+                    />
+                    <TextField
+                        margin="dense"
+                        label="Item Price"
+                        fullWidth
+                        required
+                        value={dialogFieldItemPrice}
+                        onChange={(e) =>
+                            setDialogFieldItemPrice(e.target.value)
+                        }
+                    />
+                </DialogContent>
+                <DialogActions className="mt-2">
+                    <MuiButton
+                        onClick={handleCloseAddItemDialog}
+                        color="primary"
+                        className="mr-2"
+                    >
+                        Cancel
+                    </MuiButton>
+                    <MuiButton onClick={handleAddNewItemSubmit} color="primary">
+                        Submit
                     </MuiButton>
                 </DialogActions>
             </Dialog>

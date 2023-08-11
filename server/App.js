@@ -8,14 +8,16 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
 // ROUTE FILES
+const authRoute = require("./src/routes/Auth");
 const loginRoute = require("./src/routes/Login");
 const signupRoute = require("./src/routes/Signup");
-const authRoute = require("./src/routes/Auth");
+const categoriesRoute = require("./src/routes/Categories");
 
 // ROUTE SETUP | ALL ROUTES WHICH DO NOT REQUIRE AUTORIZATION TO ACCESS
 app.use("/api/auth", authRoute);
 app.use("/api/login", loginRoute);
 app.use("/api/signup", signupRoute);
+app.use("/api/categories", categoriesRoute);
 
 // admin route
 app.get("/admin", (req, res)=>{

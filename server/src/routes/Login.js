@@ -25,7 +25,7 @@ router.post("/", (req, res) => {
                                 email: result[0].email,
                                 role: result[0].role,
                                 last_name: result[0].last_name,
-                            }, process.env.SECRETKEY, {expiresIn: "2h",});
+                            }, process.env.SECRETKEY, {expiresIn: "24h",});
 
                             return res.status(200).send({
                                 success: true,

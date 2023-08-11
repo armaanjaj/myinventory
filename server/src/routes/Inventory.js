@@ -61,7 +61,7 @@ router
 
     .post("/", (req, res) => {
         if (
-            req.body.category !== "number" ||
+            typeof req.body.category !== "number" ||
             req.body.itemName === "" ||
             req.body.price === "" ||
             req.body.email === "" ||

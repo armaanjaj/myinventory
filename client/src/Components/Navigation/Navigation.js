@@ -10,11 +10,14 @@ import { useDispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import { actionCreators } from "../../State/index";
 import Logo from "../Logo/Logo";
+import jwtDecode from "jwt-decode";
 
 function Navigation() {
     let navigate = useNavigate();
 
     const mode = useSelector((state) => state.darkMode);
+    const token = useSelector((state) => state.auth.user?.token);
+
     const dispatch = useDispatch();
     const { darkMode } = bindActionCreators(actionCreators, dispatch);
     const [on, setModeOn] = useState(false);
@@ -22,27 +25,36 @@ function Navigation() {
         setModeOn(!on);
         darkMode(!on);
     };
-    
+
     const [mobileMenu, setMobileMenu] = useState(false);
     const [accountMenu, setAccountMenu] = useState(false);
     const accountMenuRef = useRef(null);
-    
+
     const handleClickOutside = (event) => {
         if (
             accountMenuRef.current &&
             !accountMenuRef.current.contains(event.target)
-            ) {
+        ) {
             setAccountMenu(false);
         }
     };
 
+    const [ownerEmail, setOwnerEmail] = useState("");
+
+    let jwtData = null;
+
     useEffect(() => {
+        if (token !== undefined) {
+            jwtData = jwtDecode(token);
+            setOwnerEmail(jwtData.email);
+        }
+
         document.addEventListener("click", handleClickOutside, true);
         return () => {
             document.removeEventListener("click", handleClickOutside, true);
         };
-    });
-    
+    }, [token, jwtData]);
+
     // USE REDUX TO GET THE LOGIN STATE
     const isLoginIn = useSelector((state) => state.auth.isAuthenticated);
 
@@ -57,7 +69,6 @@ function Navigation() {
             navigate("/");
         }, 800);
     };
-    
 
     return (
         <>
@@ -134,7 +145,7 @@ function Navigation() {
                             </>
                         ) : (
                             <span
-                                className="text-black py-0 px-[1.55rem] text-[1rem] cursor-pointer"
+                                className="text-black py-0 px-[1.55rem] text-[1rem]"
                                 onClick={() => {
                                     setAccountMenu(!accountMenu);
                                 }}
@@ -142,10 +153,12 @@ function Navigation() {
                                 {accountMenu === false ? (
                                     <AccountCircleIcon
                                         style={{ color: `${mode.colorNavbar}` }}
+                                        className="cursor-pointer"
                                     />
                                 ) : (
                                     <CloseIcon
                                         style={{ color: `${mode.colorNavbar}` }}
+                                        className="cursor-pointer"
                                     />
                                 )}
                                 {accountMenu && (
@@ -166,9 +179,7 @@ function Navigation() {
                                             className="p-2 text-[14px] border-b-[1px] border-black border-solid w-[90%]"
                                         >
                                             <span>Owner: </span>
-                                            <span>
-                                                {"armaan.jaj@gmail.com"}
-                                            </span>
+                                            <span>{ownerEmail}</span>
                                         </span>
                                         <Link
                                             to={"/account"}
