@@ -44,6 +44,7 @@ function Inventory() {
     const [dialogItemCategory, setDialogItemCategory] = useState("");
     const [dialogItemName, setDialogItemName] = useState("");
     const [dialogItemPrice, setDialogItemPrice] = useState("");
+    const [dialogItemId, setDialogItemId] = useState("");
 
     // add item dialog box
     const [openAddItemDialog, setOpenAddItemDialog] = useState(false);
@@ -52,7 +53,7 @@ function Inventory() {
     const [dialogFieldItemPrice, setDialogFieldItemPrice] = useState("");
 
     // edit item dialog box
-    const [opeEditItemDialog, setOpeEditItemDialog] = useState(false);
+    const [opeEditItemDialog, setOpenEditItemDialog] = useState(false);
     const [dialogEditFieldCategory, setDialogEditFieldCategory] = useState("");
     const [dialogEditFieldItemName, setDialogEditFieldItemName] = useState("");
     const [dialogEditFieldItemPrice, setDialogEditFieldItemPrice] = useState("");
@@ -75,14 +76,19 @@ function Inventory() {
     };
 
     // edit item dialog handler
-    const handleOpenEditItemDialog = () => {
-        setOpeEditItemDialog(true);
+    const handleHydrateEditDialog = (data) => {
+        getAllCategories();
+        setDialogEditFieldCategory(data.category);
+        setDialogEditFieldItemName(data.item_name);
+        setDialogEditFieldItemPrice(data.price);
+        setOpenEditItemDialog(true);
     };
     const handleCloseEditItemDialog = () => {
         setDialogEditFieldCategory("");
         setDialogEditFieldItemName("");
         setDialogEditFieldItemPrice("");
-        setOpenAddItemDialog(false);
+        setOpenEditItemDialog(false);
+        setOpenOptionsDialog(false)
     };
 
     let jwtData = null;
@@ -90,7 +96,7 @@ function Inventory() {
     useEffect(() => {
         if (token !== undefined) {
             jwtData = jwtDecode(token);
-            setOwnerEmail(jwtData.email)
+            setOwnerEmail(jwtData.email);
             getAllItems(jwtData.email);
         }
     }, [token, jwtData]);
@@ -131,7 +137,6 @@ function Inventory() {
     };
 
     const handleAddNewItemSubmit = (e) => {
-
         e.preventDefault();
 
         let inventoryBody = {
@@ -139,7 +144,7 @@ function Inventory() {
             itemName: dialogFieldItemName,
             price: dialogFieldItemPrice,
             email: ownerEmail,
-        }
+        };
 
         axios
             .post(INVENTORY_URL, inventoryBody, {
@@ -150,9 +155,59 @@ function Inventory() {
             })
             .then((response) => {
                 if (response.data) {
-                    console.log(response.data)
-                    handleCloseAddItemDialog()
-                    getAllItems(ownerEmail)
+                    // console.log(response.data);
+                    handleCloseAddItemDialog();
+                    getAllItems(ownerEmail);
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    };
+
+    const handlePressEdit = (itemId) => {
+        axios
+            .get(INVENTORY_URL + `/${itemId}`, {
+                params: {
+                    email: ownerEmail,
+                },
+                headers: {
+                    "x-auth-token": token,
+                    "Content-Type": "application/json",
+                },
+            })
+            .then((response) => {
+                if (response.data) {
+                    handleHydrateEditDialog(response.data[0]);
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    };
+
+    const handleEditItemSubmit = (e) => {
+        e.preventDefault();
+
+        let inventoryBody = {
+            category: dialogEditFieldCategory,
+            itemName: dialogEditFieldItemName,
+            price: dialogEditFieldItemPrice,
+            email: ownerEmail,
+        };
+
+        axios
+            .put(INVENTORY_URL + `/${dialogItemId}`, inventoryBody, {
+                headers: {
+                    "x-auth-token": token,
+                    "Content-Type": "application/json",
+                },
+            })
+            .then((response) => {
+                if (response.data) {
+                    // console.log(response.data);
+                    handleCloseEditItemDialog();
+                    getAllItems(ownerEmail);
                 }
             })
             .catch((error) => {
@@ -249,6 +304,9 @@ function Inventory() {
                                                         setDialogItemPrice(
                                                             item.price
                                                         );
+                                                        setDialogItemId(
+                                                            item.item_id
+                                                        );
                                                         setOpenOptionsDialog(
                                                             true
                                                         );
@@ -317,7 +375,7 @@ function Inventory() {
                 </DialogContent>
                 <DialogActions>
                     <MuiButton
-                        onClick={handleCloseOptionsDialog}
+                        onClick={() => handlePressEdit(dialogItemId)}
                         color="inherit"
                         className="flex flex-row justify-start items-center gap-4"
                     >
@@ -387,6 +445,69 @@ function Inventory() {
                         Cancel
                     </MuiButton>
                     <MuiButton onClick={handleAddNewItemSubmit} color="primary">
+                        Submit
+                    </MuiButton>
+                </DialogActions>
+            </Dialog>
+
+            {/* Edit item dialog box */}
+            <Dialog
+                open={opeEditItemDialog}
+                onClose={handleCloseEditItemDialog}
+            >
+                <DialogTitle>Edit Item</DialogTitle>
+                <DialogContent>
+                    <TextField
+                        margin="dense"
+                        select
+                        label="Categories"
+                        fullWidth
+                        required
+                        value={dialogEditFieldCategory}
+                        onChange={(e) =>
+                            setDialogEditFieldCategory(e.target.value)
+                        }
+                    >
+                        {categoryArray.map((category) => (
+                            <MenuItem
+                                key={category.category_id}
+                                value={category.category_id}
+                            >
+                                {category.category_name}
+                            </MenuItem>
+                        ))}
+                    </TextField>
+
+                    <TextField
+                        margin="dense"
+                        label="Item Name"
+                        fullWidth
+                        required
+                        value={dialogEditFieldItemName}
+                        onChange={(e) =>
+                            setDialogEditFieldItemName(e.target.value)
+                        }
+                    />
+                    <TextField
+                        margin="dense"
+                        label="Item Price"
+                        fullWidth
+                        required
+                        value={dialogEditFieldItemPrice}
+                        onChange={(e) =>
+                            setDialogEditFieldItemPrice(e.target.value)
+                        }
+                    />
+                </DialogContent>
+                <DialogActions className="mt-2">
+                    <MuiButton
+                        onClick={handleCloseEditItemDialog}
+                        color="primary"
+                        className="mr-2"
+                    >
+                        Cancel
+                    </MuiButton>
+                    <MuiButton onClick={handleEditItemSubmit} color="primary">
                         Submit
                     </MuiButton>
                 </DialogActions>

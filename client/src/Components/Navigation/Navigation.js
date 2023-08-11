@@ -277,16 +277,16 @@ function Navigation() {
                                 >
                                     Signup
                                 </Link>
-                                <Link
-                                    to={"/logout"}
+                                <div
                                     style={{
                                         color: `${mode.colorNavbar}`,
                                         borderBottom: "none",
                                     }}
                                     className="no-underline text-black p-4 text-[1rem] cursor-pointer border-b-[1px] border-black border-solid w-[90%]"
+                                    onClick={handleLogout}
                                 >
                                     Logout
-                                </Link>
+                                </div>
                             </div>
                         )}
                     </div>
