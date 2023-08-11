@@ -24,6 +24,7 @@ import useAuth from "../../Hooks/useAuth";
 import jwtDecode from "jwt-decode";
 import axios from "axios";
 import Loader from "../../Components/Loaders/Loader-FS";
+import { PDFDocument, rgb, StandardFonts, PageSizes } from "pdf-lib";
 
 const INVENTORY_URL = "/api/auth/inventory";
 const CATEGORY_URL = "/api/categories";
@@ -58,12 +59,13 @@ function Inventory() {
     const [opeEditItemDialog, setOpenEditItemDialog] = useState(false);
     const [dialogEditFieldCategory, setDialogEditFieldCategory] = useState("");
     const [dialogEditFieldItemName, setDialogEditFieldItemName] = useState("");
-    const [dialogEditFieldItemPrice, setDialogEditFieldItemPrice] = useState("");
+    const [dialogEditFieldItemPrice, setDialogEditFieldItemPrice] =
+        useState("");
 
     // success dialog box
-    const [openSuccessDialog, setOpenSuccessDialog] = useState(false)
-    const [successDialogTitle, setSuccessDialogTitle] = useState("")
-    const [successDialogContent, setSuccessDialogContent] = useState("")
+    const [openSuccessDialog, setOpenSuccessDialog] = useState(false);
+    const [successDialogTitle, setSuccessDialogTitle] = useState("");
+    const [successDialogContent, setSuccessDialogContent] = useState("");
 
     // options dialog handler
     const handleCloseOptionsDialog = () => {
@@ -96,20 +98,9 @@ function Inventory() {
         setDialogEditFieldItemPrice("");
     };
 
-    let jwtData = null;
-
-    useEffect(() => {
-        if (token !== undefined) {
-            jwtData = jwtDecode(token);
-            setOwnerEmail(jwtData.email);
-            getAllItems(jwtData.email);
-        }
-    }, [token, jwtData]);
-
     // DATA FETCHERS & HANDLERS
     const getAllItems = (email) => {
-
-        setLoading(true)
+        setLoading(true);
 
         axios
             .get(INVENTORY_URL, {
@@ -123,12 +114,20 @@ function Inventory() {
             })
             .then((response) => {
                 if (response.data) {
-                    setInventoryArray(response.data);
-                    setLoading(false)
+                    if (!response.data.success) {
+                        setInventoryArray(response.data);
+                    } else {
+                        setInventoryArray([]);
+                    }
+                } else {
+                    setInventoryArray([]);
                 }
             })
             .catch((error) => {
-                console.log(error);
+                // Handle error
+            })
+            .finally(() => {
+                setLoading(false);
             });
     };
 
@@ -141,7 +140,7 @@ function Inventory() {
                 }
             })
             .catch((error) => {
-                console.log(error);
+                // console.log(error);
             });
     };
 
@@ -149,7 +148,7 @@ function Inventory() {
         e.preventDefault();
 
         setOpenAddItemDialog(false);
-        setLoading(true)
+        setLoading(true);
 
         let inventoryBody = {
             category: dialogFieldCategory,
@@ -170,22 +169,23 @@ function Inventory() {
                     // console.log(response.data);
                     handleCloseAddItemDialog();
                     getAllItems(ownerEmail);
-                    setSuccessDialogTitle("Success")
-                    setSuccessDialogContent(response.data.message)
-                    setLoading(false)
-                    setOpenSuccessDialog(true)
+                    setSuccessDialogTitle("Success");
+                    setSuccessDialogContent(response.data.message);
+                    setOpenSuccessDialog(true);
                 }
             })
             .catch((error) => {
-                console.log(error);
+                // console.log(error);
+            })
+            .finally(() => {
+                setLoading(false);
             });
     };
 
     const handlePressEdit = (itemId) => {
-
         setOpenOptionsDialog(false);
-        setLoading(true)
-        
+        setLoading(true);
+
         axios
             .get(INVENTORY_URL + `/${itemId}`, {
                 params: {
@@ -198,12 +198,14 @@ function Inventory() {
             })
             .then((response) => {
                 if (response.data) {
-                    setLoading(false)
                     handleHydrateEditDialog(response.data[0]);
                 }
             })
             .catch((error) => {
-                console.log(error);
+                // console.log(error);
+            })
+            .finally(() => {
+                setLoading(false);
             });
     };
 
@@ -211,7 +213,7 @@ function Inventory() {
         e.preventDefault();
 
         setOpenEditItemDialog(false);
-        setLoading(true)
+        setLoading(true);
 
         let inventoryBody = {
             category: dialogEditFieldCategory,
@@ -231,22 +233,23 @@ function Inventory() {
                 if (response.data) {
                     handleCloseEditItemDialog();
                     getAllItems(ownerEmail);
-                    setSuccessDialogTitle("Success")
-                    setSuccessDialogContent(response.data.message)
-                    setLoading(false)
-                    setOpenSuccessDialog(true)
+                    setSuccessDialogTitle("Success");
+                    setSuccessDialogContent(response.data.message);
+                    setOpenSuccessDialog(true);
                 }
             })
             .catch((error) => {
-                console.log(error);
+                // console.log(error);
+            })
+            .finally(() => {
+                setLoading(false);
             });
     };
 
     const handlePressDelete = () => {
-
         setOpenOptionsDialog(false);
-        setLoading(true)
-        
+        setLoading(true);
+
         axios
             .delete(INVENTORY_URL + `/${dialogItemId}`, {
                 headers: {
@@ -257,20 +260,162 @@ function Inventory() {
             .then((response) => {
                 if (response.data) {
                     getAllItems(ownerEmail);
-                    setSuccessDialogTitle("Success")
-                    setSuccessDialogContent(response.data.message)
-                    setLoading(false)
-                    setOpenSuccessDialog(true)
+                    setSuccessDialogTitle("Success");
+                    setSuccessDialogContent(response.data.message);
+                    setOpenSuccessDialog(true);
+                }
+            })
+            .catch((error) => {
+                // console.log(error);
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+    };
+
+    useEffect(() => {
+        if (token !== undefined) {
+            let jwtData = jwtDecode(token);
+            setOwnerEmail(jwtData.email);
+            getAllItems(jwtData.email);
+        }
+    }, [token]);
+
+    async function generatePDF(inventoryData) {
+        const pdfDoc = await PDFDocument.create();
+        const page = pdfDoc.addPage(PageSizes.A4);
+
+        // Set font and font size
+        const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+        page.drawText("MyInventory", {
+            x: 40,
+            y: page.getHeight() - 50,
+            font,
+            size: 24,
+            color: rgb(0, 0, 0),
+        });
+
+        let x = 40
+        let y = page.getHeight() - 90;
+
+        page.drawText(`Owner: ${ownerEmail}`, {
+            x,
+            y,
+            font,
+            size: 11,
+            color: rgb(0, 0, 0),
+        });
+        page.drawText(`${new Date().getMonth() + 1}/${new Date().getDate()}/${new Date().getFullYear()}`, {
+            x: x + 450,
+            y,
+            font,
+            size: 11,
+            color: rgb(0, 0, 0),
+        });
+
+        y -= 50
+
+        // TABLE HEAD
+        page.drawText('Category', {
+            x,
+            y,
+            font,
+            size: 15,
+            color: rgb(0, 0, 0),
+        });
+        page.drawText('Name', {
+            x: x + 200,
+            y,
+            font,
+            size: 15,
+            color: rgb(0, 0, 0),
+        });
+        page.drawText('Price', {
+            x: x + 400,
+            y,
+            font,
+            size: 15,
+            color: rgb(0, 0, 0),
+        });
+
+        y -= 20;
+
+        let totalValue = 0;
+
+        for (const item of inventoryData) {
+            y -= 15;
+            page.drawText(`${item.category_name}`, {
+                x,
+                y,
+                font,
+                size: 12,
+                color: rgb(0, 0, 0),
+            });
+            page.drawText(`${item.item_name}`, {
+                x: x + 200,
+                y,
+                font,
+                size: 12,
+                color: rgb(0, 0, 0),
+            });
+            page.drawText(`$ ${item.price}`, {
+                x: x + 400,
+                y,
+                font,
+                size: 12,
+                color: rgb(0, 0, 0),
+            });
+
+            totalValue += Number(item.price)
+        }
+
+        y -= 25;
+
+        page.drawText(`Total value: $ ${totalValue.toFixed(2)}`, {
+            x: x + 300,
+            y,
+            font,
+            size: 14,
+            color: rgb(0, 0, 0),
+        });
+
+        const pdfBytes = await pdfDoc.save();
+        return pdfBytes;
+    }
+
+    function downloadPDF(pdfBytes) {
+        const blob = new Blob([pdfBytes], { type: "application/pdf" });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = "inventory_report.pdf";
+        link.click();
+    }
+
+    function fetchInventoryAndGeneratePDF() {
+        axios
+            .get(INVENTORY_URL, {
+                params: {
+                    email: ownerEmail,
+                },
+                headers: {
+                    "x-auth-token": token,
+                    "Content-Type": "application/json",
+                },
+            })
+            .then((response) => {
+                if (response.data && !response.data.success) {
+                    const inventoryData = response.data;
+                    generatePDF(inventoryData).then(downloadPDF);
                 }
             })
             .catch((error) => {
                 console.log(error);
             });
-    };
+    }
 
     return (
         <>
-            {loading && <Loader/>}
+            {loading && <Loader />}
             <Navigation />
             <div className="inventory-body-main">
                 <div className="my-[15vh] smallMobile:mx-5 mobile:mx-5 tablet:mx-0 laptop:mx-0 desktop:mx-0">
@@ -394,7 +539,10 @@ function Inventory() {
                                         <AddIcon />
                                         <span>Add new item</span>
                                     </div>
-                                    <div className="flex flex-row justify-start items-center gap-4 border-gray-400 border-2 p-2 rounded-md w-full cursor-pointer">
+                                    <div
+                                        onClick={fetchInventoryAndGeneratePDF}
+                                        className="flex flex-row justify-start items-center gap-4 border-gray-400 border-2 p-2 rounded-md w-full cursor-pointer"
+                                    >
                                         <PrintIcon />
                                         <span>Export</span>
                                     </div>
@@ -569,14 +717,19 @@ function Inventory() {
             </Dialog>
 
             {/* Confirmation SUCCESS dialog */}
-            <Dialog open={openSuccessDialog} onClose={()=>setOpenSuccessDialog(false)}>
+            <Dialog
+                open={openSuccessDialog}
+                onClose={() => setOpenSuccessDialog(false)}
+            >
                 <DialogTitle>{successDialogTitle}</DialogTitle>
                 <DialogContent>
-                    <DialogContentText>{successDialogContent}</DialogContentText>
+                    <DialogContentText>
+                        {successDialogContent}
+                    </DialogContentText>
                 </DialogContent>
                 <DialogActions>
                     <MuiButton
-                        onClick={()=>setOpenSuccessDialog(false)}
+                        onClick={() => setOpenSuccessDialog(false)}
                         color="primary"
                         autoFocus
                     >

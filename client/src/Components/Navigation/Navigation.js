@@ -11,9 +11,12 @@ import { bindActionCreators } from "redux";
 import { actionCreators } from "../../State/index";
 import Logo from "../Logo/Logo";
 import jwtDecode from "jwt-decode";
+import Loader from "../Loaders/Loader-FS";
 
 function Navigation() {
     let navigate = useNavigate();
+
+    const [loading, setLoading] = useState(false);
 
     const mode = useSelector((state) => state.darkMode);
     const token = useSelector((state) => state.auth.user?.token);
@@ -62,16 +65,19 @@ function Navigation() {
     const { logout } = bindActionCreators(actionCreators, dispatch);
 
     const handleLogout = () => {
+        setLoading(true);
         localStorage.removeItem("authToken");
         logout();
 
         setTimeout(() => {
+            setLoading(false);
             navigate("/");
         }, 800);
     };
 
     return (
         <>
+            {loading && <Loader />}
             <section
                 id="headSection"
                 style={{ backgroundColor: `${mode.bgNavbar}` }}
@@ -181,7 +187,7 @@ function Navigation() {
                                             <span>Owner: </span>
                                             <span>{ownerEmail}</span>
                                         </span>
-                                        <Link
+                                        {/* <Link
                                             to={"/account"}
                                             style={{
                                                 color: `${mode.colorNavbar}`,
@@ -189,7 +195,7 @@ function Navigation() {
                                             className="no-underline text-black p-2 text-[1rem] cursor-pointer border-b-[1px] border-black border-solid w-[90%] rounded-[2px]"
                                         >
                                             <span>My account</span>
-                                        </Link>
+                                        </Link> */}
                                         <div
                                             style={{
                                                 color: `${mode.colorNavbar}`,
@@ -245,7 +251,7 @@ function Navigation() {
                                 >
                                     Inventory
                                 </Link>
-                                <Link
+                                {/* <Link
                                     to={"/account"}
                                     style={{ color: `${mode.colorNavbar}` }}
                                     onClick={() => {
@@ -254,39 +260,46 @@ function Navigation() {
                                     className="no-underline text-black p-4 text-[1rem] cursor-pointer border-b-[1px] border-black border-solid w-[90%]"
                                 >
                                     Account
-                                </Link>
-                                <Link
-                                    to={"/auth/login"}
-                                    style={{ color: `${mode.colorNavbar}` }}
-                                    onClick={() => {
-                                        setMobileMenu(!mobileMenu);
-                                    }}
-                                    className="no-underline text-black p-4 text-[1rem] cursor-pointer border-b-[1px] border-black border-solid w-[90%]"
-                                >
-                                    Login
-                                </Link>
-                                <Link
-                                    to={"/auth/signup"}
-                                    style={{
-                                        color: `${mode.colorNavbar}`,
-                                    }}
-                                    onClick={() => {
-                                        setMobileMenu(!mobileMenu);
-                                    }}
-                                    className="no-underline text-black p-4 text-[1rem] cursor-pointer border-b-[1px] border-black border-solid w-[90%]"
-                                >
-                                    Signup
-                                </Link>
-                                <div
-                                    style={{
-                                        color: `${mode.colorNavbar}`,
-                                        borderBottom: "none",
-                                    }}
-                                    className="no-underline text-black p-4 text-[1rem] cursor-pointer border-b-[1px] border-black border-solid w-[90%]"
-                                    onClick={handleLogout}
-                                >
-                                    Logout
-                                </div>
+                                </Link> */}
+                                {!isLoginIn ? (
+                                    <>
+                                        <Link
+                                            to={"/auth/login"}
+                                            style={{
+                                                color: `${mode.colorNavbar}`,
+                                            }}
+                                            onClick={() => {
+                                                setMobileMenu(!mobileMenu);
+                                            }}
+                                            className="no-underline text-black p-4 text-[1rem] cursor-pointer border-b-[1px] border-black border-solid w-[90%]"
+                                        >
+                                            Login
+                                        </Link>
+                                        <Link
+                                            to={"/auth/signup"}
+                                            style={{
+                                                color: `${mode.colorNavbar}`,
+                                            }}
+                                            onClick={() => {
+                                                setMobileMenu(!mobileMenu);
+                                            }}
+                                            className="no-underline text-black p-4 text-[1rem] cursor-pointer border-b-[1px] border-black border-solid w-[90%]"
+                                        >
+                                            Signup
+                                        </Link>
+                                    </>
+                                ) : (
+                                    <div
+                                        style={{
+                                            color: `${mode.colorNavbar}`,
+                                            borderBottom: "none",
+                                        }}
+                                        className="no-underline text-black p-4 text-[1rem] cursor-pointer border-b-[1px] border-black border-solid w-[90%]"
+                                        onClick={handleLogout}
+                                    >
+                                        Logout
+                                    </div>
+                                )}
                             </div>
                         )}
                     </div>

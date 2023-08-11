@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Form from "../../Components/Form/Form";
@@ -25,7 +25,7 @@ function Login() {
     const [inputError, setInputError] = useState(false);
 
     // HANDLE AUTHENTICATION & NAVIGATION
-    useAuth("AUTH")
+    useAuth("AUTH");
 
     // HANDLERS
     const handleLogin = (e) => {
